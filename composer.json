@@ -1,0 +1,42 @@
+{
+	"name": "ekapusta/oauth2-esia",
+	"type": "library",
+	"description": "Allows to authenticate in ESIA and get authenticated individual personal information.",
+	"keywords": ["oauth2", "oauth2-provider", "openid-connect", "esia"],
+	"license": "MIT",
+	"authors": [
+        {
+            "name": "Alexander Ustimenko",
+            "email": "ustimenko.alexander@gmail.com"
+        }
+    ],
+	"require": {
+		"php": "^5.6 || ^7.0",
+		"psr/log": "^1.0",
+		"league/oauth2-client": "^2.3",
+		"ramsey/uuid": "^3.0",
+		"lcobucci/jwt": "^3.2.2"
+	},
+	"require-dev": {
+		"monolog/monolog": "^1.23",
+		"bramus/monolog-colored-line-formatter": "^2.0",
+		"phpunit/phpunit": "^5.7"
+	},
+	"autoload": {
+		"psr-4": {
+			"Ekapusta\\OAuth2Esia\\": "src"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Ekapusta\\OAuth2Esia\\Tests\\": "tests"
+		}
+	},
+	"scripts": {
+		"post-autoload-dump": [
+			"echo vendor/bin/phpunit --debug '$@' > vendor/bin/phpunit-debug",
+			"echo /usr/bin/env phpdbg -qrr vendor/bin/phpunit --coverage-html ./.coverage --coverage-text '$@' > vendor/bin/phpunit-coverage",
+			"chmod +x vendor/bin/php*"
+		]
+	}
+}
