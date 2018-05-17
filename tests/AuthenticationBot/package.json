@@ -1,0 +1,17 @@
+{
+	"author": {
+		"email": "a@ustimen.co",
+		"name": "Ustimenko Alexander"
+	},
+	"description": "Logs in to ESIA URL by provided login/password and dumps out redirection URL.",
+	"repository": {
+		"type": "git",
+		"url": "ssh://gitolite@git.ekapusta.tech/esia-client"
+	},
+	"license": "UNLICENSED",
+	"dependencies": {
+		"command-line-args": "^5.0.2",
+		"command-line-usage": "^5.0.4",
+		"puppeteer": "^1.3.0"
+	}
+}
