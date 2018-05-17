@@ -2,6 +2,7 @@
 !/.gitattributes
 !/.gitignore
 !/.php_cs.dist
+!/.travis.yml
 /composer.lock
 /composer.phar
 /docs/php.rnds.esia.oauth2_v2/Log/*
