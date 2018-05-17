@@ -1,0 +1,31 @@
+dist: trusty
+
+sudo: required
+
+language: php
+
+php:
+  - "5.6"
+
+env:
+  - ESIA_CLIENT_OPENSSL_TOOL_PATH="docker run --rm -v $(pwd):$(pwd) -w $(pwd) rnix/openssl-gost openssl"
+
+services:
+  - docker
+
+install:
+  - docker pull rnix/openssl-gost
+  - ln --symbolic composer.lock.dist composer.lock
+  - composer install
+  - (cd tests/AuthenticationBot && npm install --no-progress)
+
+script:
+  - vendor/bin/phpunit --debug --coverage-clover=.coverage.xml
+
+after_success:
+  - vendor/bin/coveralls --coverage_clover=.coverage.xml --json_path=.coveralls.json --verbose
+
+cache:
+  directories:
+    - vendor
+    - tests/AuthenticationBot/node_modules
