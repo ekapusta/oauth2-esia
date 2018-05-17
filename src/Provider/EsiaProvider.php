@@ -39,10 +39,10 @@ class EsiaProvider extends AbstractProvider implements ProviderInterface
 
     public function __construct(array $options = [], array $collaborators = [])
     {
-        $options += [
+        $options = $options + [
             'remoteCertificatePath' => sprintf(__DIR__.'/../../resources/esia.%s.cer', $this->isTest ? 'test' : 'prod'),
         ];
-        $collaborators += [
+        $collaborators = $collaborators + [
             'signer' => null,
         ];
 
@@ -173,7 +173,7 @@ class EsiaProvider extends AbstractProvider implements ProviderInterface
 
     protected function getAccessTokenRequest(array $params)
     {
-        $params += [
+        $params = $params + [
             'scope' => 'openid',
             'state' => $this->getRandomState(),
             'timestamp' => $this->getTimeStamp(),
