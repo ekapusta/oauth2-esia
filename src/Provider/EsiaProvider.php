@@ -21,7 +21,7 @@ class EsiaProvider extends AbstractProvider implements ProviderInterface
 {
     use BearerAuthorizationTrait;
 
-    protected $isTest = true;
+    protected $isTest = false;
 
     protected $defaultScopes = ['openid', 'fullname'];
 
@@ -39,16 +39,13 @@ class EsiaProvider extends AbstractProvider implements ProviderInterface
 
     public function __construct(array $options = [], array $collaborators = [])
     {
-        $options = $options + [
-            'remoteCertificatePath' => sprintf(__DIR__.'/../../resources/esia.%s.cer', $this->isTest ? 'test' : 'prod'),
-        ];
-        $collaborators = $collaborators + [
-            'signer' => null,
-        ];
-
         parent::__construct($options, $collaborators);
+        if (empty($this->remoteCertificatePath)) {
+            $this->remoteCertificatePath = __DIR__.'/../../resources/';
+            $this->remoteCertificatePath .= $this->isTest ? 'esia.test.cer' : 'esia.prod.cer';
+        }
 
-        if ($collaborators['signer'] instanceof SignerInterface) {
+        if (isset($collaborators['signer']) && $collaborators['signer'] instanceof SignerInterface) {
             $this->signer = $collaborators['signer'];
             $this->encoder = new Encoder();
         } else {

@@ -34,6 +34,7 @@ class EsiaProviderTest extends TestCase
         $this->provider = new EsiaProvider([
             'clientId' => 'EKAP01',
             'redirectUri' => $this->redirectUri,
+            'isTest' => true,
             'defaultScopes' => [
                 // needed for authenticating
                 'openid',
