@@ -35,7 +35,9 @@ $provider = new EsiaProvider([
     'clientId'      => 'XXXXXX',
     'redirectUri'   => 'https://your-system.domain/auth/finish/',
     'defaultScopes' => ['openid', 'fullname', '...'],
-//  'isTest'        => true, // Allows to work with test portal version
+// For work with test portal version
+//  'remoteUrl' => 'https://esia-portal1.test.gosuslugi.ru',
+//  'remoteCertificatePath' => EsiaProvider::RESOURCES.'esia.test.cer',
 ], [
     'signer' => new OpensslPkcs7('/path/to/public/certificate.cer', '/path/to/private.key')
 ]);

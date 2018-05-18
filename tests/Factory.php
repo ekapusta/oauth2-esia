@@ -4,6 +4,7 @@ namespace Ekapusta\OAuth2Esia\Tests;
 
 use Bramus\Monolog\Formatter\ColoredLineFormatter;
 use Bramus\Monolog\Formatter\ColorSchemes\TrafficLight;
+use Ekapusta\OAuth2Esia\Provider\EsiaProvider;
 use Ekapusta\OAuth2Esia\Token\EsiaAccessToken;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Signer\Key;
@@ -15,7 +16,7 @@ use Psr\Log\LoggerInterface;
 
 class Factory
 {
-    const KEYS = __DIR__.'/../resources/';
+    const KEYS = EsiaProvider::RESOURCES;
 
     /**
      * @return LoggerInterface

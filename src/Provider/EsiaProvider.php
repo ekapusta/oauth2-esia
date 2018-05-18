@@ -21,11 +21,13 @@ class EsiaProvider extends AbstractProvider implements ProviderInterface
 {
     use BearerAuthorizationTrait;
 
-    protected $isTest = false;
+    const RESOURCES = __DIR__.'/../../resources/';
 
     protected $defaultScopes = ['openid', 'fullname'];
 
-    protected $remoteCertificatePath;
+    protected $remoteUrl = 'https://esia.gosuslugi.ru';
+
+    protected $remoteCertificatePath = self::RESOURCES.'esia.prod.cer';
 
     /**
      * @var SignerInterface
@@ -40,9 +42,11 @@ class EsiaProvider extends AbstractProvider implements ProviderInterface
     public function __construct(array $options = [], array $collaborators = [])
     {
         parent::__construct($options, $collaborators);
-        if (empty($this->remoteCertificatePath)) {
-            $this->remoteCertificatePath = __DIR__.'/../../resources/';
-            $this->remoteCertificatePath .= $this->isTest ? 'esia.test.cer' : 'esia.prod.cer';
+        if (!filter_var($this->remoteUrl, FILTER_VALIDATE_URL)) {
+            throw new InvalidArgumentException('Remote URL is not provided!');
+        }
+        if (!file_exists($this->remoteCertificatePath)) {
+            throw new InvalidArgumentException('Remote certificate is not provided!');
         }
 
         if (isset($collaborators['signer']) && $collaborators['signer'] instanceof SignerInterface) {
@@ -153,9 +157,7 @@ class EsiaProvider extends AbstractProvider implements ProviderInterface
 
     private function getUrl($path)
     {
-        $host = $this->isTest ? 'esia-portal1.test.gosuslugi.ru' : 'esia.gosuslugi.ru';
-
-        return 'https://'.$host.$path;
+        return $this->remoteUrl.$path;
     }
 
     protected function getDefaultScopes()
