@@ -13,6 +13,11 @@ env:
 services:
   - docker
 
+branches:
+  except:
+    - master
+    - /^[0-9]/
+
 install:
   - docker pull rnix/openssl-gost
   - ln --symbolic composer.lock.dist composer.lock
