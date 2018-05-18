@@ -34,7 +34,8 @@ class EsiaProviderTest extends TestCase
         $this->provider = new EsiaProvider([
             'clientId' => 'EKAP01',
             'redirectUri' => $this->redirectUri,
-            'isTest' => true,
+            'remoteUrl' => 'https://esia-portal1.test.gosuslugi.ru',
+            'remoteCertificatePath' => EsiaProvider::RESOURCES.'esia.test.cer',
             'defaultScopes' => [
                 // needed for authenticating
                 'openid',
@@ -140,6 +141,24 @@ class EsiaProviderTest extends TestCase
     public function testSignerIsRequired()
     {
         new EsiaProvider();
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Remote URL is not provided!
+     */
+    public function testRemoteUrlIsRequired()
+    {
+        new EsiaProvider(['remoteUrl' => ''], ['signer' => $this->signer]);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Remote certificate is not provided!
+     */
+    public function testRemoteCertificateIsRequired()
+    {
+        new EsiaProvider(['remoteCertificatePath' => ''], ['signer' => $this->signer]);
     }
 
     /**
