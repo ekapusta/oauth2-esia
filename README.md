@@ -37,7 +37,7 @@ $provider = new EsiaProvider([
     'defaultScopes' => ['openid', 'fullname', '...'],
 //  'isTest'        => true, // Allows to work with test portal version
 ], [
-    'signer' => new OpensslPkcs7('path.to.public.certificate', 'path.to.private.certificate')
+    'signer' => new OpensslPkcs7('/path/to/public/certificate.cer', '/path/to/private.key')
 ]);
 ```
 
