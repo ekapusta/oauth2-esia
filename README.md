@@ -336,7 +336,7 @@ Terms
 -----
 
 ESIA from Russian "ЕСИА", which is "Единая система идентификации и аутентификации".
-Translated as "Unified authentication and authentication system".
+Translated as "Unified identification and authentication system".
 
 Links
 -----
