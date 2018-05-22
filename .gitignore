@@ -5,7 +5,5 @@
 !/.travis.yml
 /composer.lock
 /composer.phar
-/docs/php.rnds.esia.oauth2_v2/Log/*
-/docs/php.rnds.esia.oauth2_v2/Temp/*
 /tests/AuthenticationBot/node_modules
 /vendor/
