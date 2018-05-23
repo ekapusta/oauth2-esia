@@ -44,7 +44,12 @@ class Factory
      */
     public static function createAuthenticationBot()
     {
-        $bot = new AuthenticationBot('EsiaTest006@yandex.ru', '11111111', !getenv('DISPLAY'));
+        $bot = new AuthenticationBot(
+            'EsiaTest006@yandex.ru',
+            '11111111',
+            !getenv('DISPLAY'),
+            getenv('ESIA_CLIENT_AUTH_METHOD') == 'post'
+        );
         $bot->setLogger(self::createLogger('authentication-bot'));
 
         return $bot;
