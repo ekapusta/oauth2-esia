@@ -4,11 +4,18 @@ sudo: required
 
 language: php
 
-php:
-  - "5.6"
-
-env:
-  - ESIA_CLIENT_OPENSSL_TOOL_PATH="docker run --rm -i -v $(pwd):$(pwd) -w $(pwd) rnix/openssl-gost openssl" ESIA_LOGIN_ATTEMPTS=3
+matrix:
+  include:
+  - php:  "5.6"
+    env:  ESIA_CLIENT_AUTH_METHOD=get
+          ESIA_SIGNER_CLASS=Ekapusta\\OAuth2Esia\\Security\\Signer\\OpensslCli
+          ESIA_CERTIFICATE=ekapusta.gost.test.cer
+          ESIA_PRIVATE_KEY=ekapusta.gost.test.key
+  - php:  "7.1"
+    env:  ESIA_CLIENT_AUTH_METHOD=post
+          ESIA_SIGNER_CLASS=Ekapusta\\OAuth2Esia\\Security\\Signer\\OpensslPkcs7
+          ESIA_CERTIFICATE=ekapusta.rsa.test.cer
+          ESIA_PRIVATE_KEY=ekapusta.rsa.test.key
 
 services:
   - docker
@@ -23,6 +30,10 @@ install:
   - ln --symbolic composer.lock.dist composer.lock
   - composer install
   - (cd tests/AuthenticationBot && npm install --no-progress)
+
+before_script:
+  - export ESIA_CLIENT_OPENSSL_TOOL_PATH="docker run --rm -i -v $(pwd):$(pwd) -w $(pwd) rnix/openssl-gost openssl"
+  - export ESIA_LOGIN_ATTEMPTS=3
 
 script:
   - vendor/bin/phpunit --debug --coverage-clover=.coverage.xml
