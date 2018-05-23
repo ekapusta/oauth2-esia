@@ -16,13 +16,15 @@ class AuthenticationBot
     private $mobileOrEmail;
     private $password;
     private $headless;
+    private $post;
 
-    public function __construct($mobileOrEmail, $password, $headless = true)
+    public function __construct($mobileOrEmail, $password, $headless = true, $post = false)
     {
         $this->toolRoot = __DIR__.'/AuthenticationBot';
         $this->mobileOrEmail = $mobileOrEmail;
         $this->password = $password;
         $this->headless = $headless;
+        $this->post = $post;
 
         $this->setLogger(new NullLogger());
     }
@@ -37,13 +39,14 @@ class AuthenticationBot
         $this->installIfNeeded();
 
         $command = sprintf(
-            '%s --mobileOrEmail %s --password %s --loginUrl %s --redirectUrlPrefix %s %s',
+            '%s --mobileOrEmail %s --password %s --loginUrl %s --redirectUrlPrefix %s %s %s',
             $this->toolRoot.'/authentication-bot.js',
             escapeshellarg($this->mobileOrEmail),
             escapeshellarg($this->password),
             escapeshellarg($url),
             escapeshellarg($redirectUrlPrefix),
-            $this->headless ? '--headless' : ''
+            $this->headless ? '--headless' : '',
+            $this->post ? '--post' : ''
         );
 
         $this->logger->debug("Requesting command $command");
