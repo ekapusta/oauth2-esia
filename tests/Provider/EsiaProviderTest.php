@@ -93,7 +93,15 @@ class EsiaProviderTest extends TestCase
     public function testUserLoggedInToEsia($loginUrl)
     {
         $bot = Factory::createAuthenticationBot();
-        $authUrl = $bot->login($loginUrl, $this->redirectUri);
+
+        $maxLoginAttempts = getenv('ESIA_LOGIN_ATTEMPTS') ?: 1;
+        for ($loginAttemps = 0; $loginAttemps < $maxLoginAttempts; $loginAttemps++) {
+            $authUrl = $bot->login($loginUrl, $this->redirectUri);
+            if ($authUrl) {
+                break;
+            }
+            $loginUrl = $this->provider->getAuthorizationUrl();
+        }
 
         $authUrl = filter_var($authUrl, FILTER_VALIDATE_URL, FILTER_NULL_ON_FAILURE);
         $this->assertNotNull($authUrl, 'Automatic login to ESIA failed. Try again.');

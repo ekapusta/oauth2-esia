@@ -8,7 +8,7 @@ php:
   - "5.6"
 
 env:
-  - ESIA_CLIENT_OPENSSL_TOOL_PATH="docker run --rm -i -v $(pwd):$(pwd) -w $(pwd) rnix/openssl-gost openssl"
+  - ESIA_CLIENT_OPENSSL_TOOL_PATH="docker run --rm -i -v $(pwd):$(pwd) -w $(pwd) rnix/openssl-gost openssl" ESIA_LOGIN_ATTEMPTS=3
 
 services:
   - docker
