@@ -28,6 +28,19 @@ const puppeteer = require('puppeteer');
         console.error('Requesting '+request.url());
         request.continue();
     });
+    page.on('response', response => {
+        console.error('Response from '+response.url());
+        console.error(response.headers());
+        if (response.headers()['content-type'] != 'text/html') {
+            return;
+        }
+        response.text().then(result => {
+            console.error('Body from '+response.url());
+            console.error(result);
+        }, e => {
+            // ignore
+        });
+    });
 
     await Promise.all([
         page.waitForNavigation(waitOptions),
