@@ -3,7 +3,7 @@
 namespace Ekapusta\OAuth2Esia\Tests\Provider;
 
 use Ekapusta\OAuth2Esia\Provider\EsiaProvider;
-use Ekapusta\OAuth2Esia\Security\Signer\OpensslPkcs7;
+use Ekapusta\OAuth2Esia\Security\Signer\OpensslCli;
 use Ekapusta\OAuth2Esia\Tests\Factory;
 use Ekapusta\OAuth2Esia\Token\EsiaAccessToken;
 use GuzzleHttp\Client as HttpClient;
@@ -30,7 +30,12 @@ class EsiaProviderTest extends TestCase
         $httpStack->push($logger, 'logger');
 
         $this->redirectUri = 'https://system.dev/esia/auth';
-        $this->signer = new OpensslPkcs7(Factory::KEYS.'ekapusta.rsa.test.cer', Factory::KEYS.'ekapusta.rsa.test.key');
+        $this->signer = new OpensslCli(
+            Factory::KEYS.'ekapusta.gost.test.cer',
+            Factory::KEYS.'ekapusta.gost.test.key',
+            null,
+            getenv('ESIA_CLIENT_OPENSSL_TOOL_PATH') ?: 'openssl'
+        );
         $this->provider = new EsiaProvider([
             'clientId' => 'EKAP01',
             'redirectUri' => $this->redirectUri,
