@@ -66,18 +66,6 @@ class EsiaProviderTest extends TestCase
         ]);
     }
 
-    /**
-     * @expectedException \League\OAuth2\Client\Provider\Exception\IdentityProviderException
-     * @expectedExceptionMessage Unauthorized
-     * @expectedExceptionCode 401
-     */
-    public function testPersonGeneralInfoFailsAsOfBadSignedToken()
-    {
-        $accessToken = Factory::createAccessToken(Factory::KEYS.'ekapusta.rsa.test.key');
-
-        $this->provider->getResourceOwner($accessToken);
-    }
-
     public function testLoginRequestCreated()
     {
         $loginUrl = $this->provider->getAuthorizationUrl();
@@ -186,5 +174,17 @@ class EsiaProviderTest extends TestCase
         $this->assertEquals('Имя006', $info['firstName']);
 
         Factory::createLogger('esia-provider')->warning('Person info', $info);
+    }
+
+    /**
+     * @expectedException \League\OAuth2\Client\Provider\Exception\IdentityProviderException
+     * @expectedExceptionMessage Unauthorized
+     * @expectedExceptionCode 401
+     */
+    public function testPersonGeneralInfoFailsAsOfBadSignedToken()
+    {
+        $accessToken = Factory::createAccessToken(Factory::KEYS.'ekapusta.rsa.test.key');
+
+        $this->provider->getResourceOwner($accessToken);
     }
 }
