@@ -18,6 +18,9 @@ class EsiaProviderTest extends TestCase
 {
     private $redirectUri;
 
+    /**
+     * @var \Ekapusta\OAuth2Esia\Interfaces\Security\SignerInterface
+     */
     private $signer;
 
     private $provider;
@@ -30,9 +33,14 @@ class EsiaProviderTest extends TestCase
         $httpStack->push($logger, 'logger');
 
         $this->redirectUri = 'https://system.dev/esia/auth';
-        $this->signer = new OpensslCli(
-            Factory::KEYS.'ekapusta.gost.test.cer',
-            Factory::KEYS.'ekapusta.gost.test.key',
+
+        $signerClass = getenv('ESIA_SIGNER_CLASS') ?: OpensslCli::class;
+        $certificate = getenv('ESIA_CERTIFICATE') ?: 'ekapusta.gost.test.cer';
+        $privateKey = getenv('ESIA_PRIVATE_KEY') ?: 'ekapusta.gost.test.key';
+
+        $this->signer = new $signerClass(
+            Factory::KEYS.$certificate,
+            Factory::KEYS.$privateKey,
             null,
             getenv('ESIA_CLIENT_OPENSSL_TOOL_PATH') ?: 'openssl'
         );
