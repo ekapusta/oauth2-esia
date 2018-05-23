@@ -3,7 +3,7 @@
 namespace Ekapusta\OAuth2Esia\Tests\Provider;
 
 use Ekapusta\OAuth2Esia\Provider\EsiaProvider;
-use Ekapusta\OAuth2Esia\Security\Signer\OpensslPkcs7;
+use Ekapusta\OAuth2Esia\Security\Signer\OpensslCli;
 use Ekapusta\OAuth2Esia\Tests\Factory;
 use Ekapusta\OAuth2Esia\Token\EsiaAccessToken;
 use GuzzleHttp\Client as HttpClient;
@@ -30,7 +30,12 @@ class EsiaProviderTest extends TestCase
         $httpStack->push($logger, 'logger');
 
         $this->redirectUri = 'https://system.dev/esia/auth';
-        $this->signer = new OpensslPkcs7(Factory::KEYS.'ekapusta.rsa.test.cer', Factory::KEYS.'ekapusta.rsa.test.key');
+        $this->signer = new OpensslCli(
+            Factory::KEYS.'ekapusta.gost.test.cer',
+            Factory::KEYS.'ekapusta.gost.test.key',
+            null,
+            getenv('ESIA_CLIENT_OPENSSL_TOOL_PATH') ?: 'openssl'
+        );
         $this->provider = new EsiaProvider([
             'clientId' => 'EKAP01',
             'redirectUri' => $this->redirectUri,
@@ -66,18 +71,6 @@ class EsiaProviderTest extends TestCase
         ]);
     }
 
-    /**
-     * @expectedException \League\OAuth2\Client\Provider\Exception\IdentityProviderException
-     * @expectedExceptionMessage Unauthorized
-     * @expectedExceptionCode 401
-     */
-    public function testPersonGeneralInfoFailsAsOfBadSignedToken()
-    {
-        $accessToken = Factory::createAccessToken(Factory::KEYS.'ekapusta.rsa.test.key');
-
-        $this->provider->getResourceOwner($accessToken);
-    }
-
     public function testLoginRequestCreated()
     {
         $loginUrl = $this->provider->getAuthorizationUrl();
@@ -93,7 +86,15 @@ class EsiaProviderTest extends TestCase
     public function testUserLoggedInToEsia($loginUrl)
     {
         $bot = Factory::createAuthenticationBot();
-        $authUrl = $bot->login($loginUrl, $this->redirectUri);
+
+        $maxLoginAttempts = getenv('ESIA_LOGIN_ATTEMPTS') ?: 1;
+        for ($loginAttemps = 0; $loginAttemps < $maxLoginAttempts; $loginAttemps++) {
+            $authUrl = $bot->login($loginUrl, $this->redirectUri);
+            if ($authUrl) {
+                break;
+            }
+            $loginUrl = $this->provider->getAuthorizationUrl();
+        }
 
         $authUrl = filter_var($authUrl, FILTER_VALIDATE_URL, FILTER_NULL_ON_FAILURE);
         $this->assertNotNull($authUrl, 'Automatic login to ESIA failed. Try again.');
@@ -178,5 +179,17 @@ class EsiaProviderTest extends TestCase
         $this->assertEquals('Имя006', $info['firstName']);
 
         Factory::createLogger('esia-provider')->warning('Person info', $info);
+    }
+
+    /**
+     * @expectedException \League\OAuth2\Client\Provider\Exception\IdentityProviderException
+     * @expectedExceptionMessage Unauthorized
+     * @expectedExceptionCode 401
+     */
+    public function testPersonGeneralInfoFailsAsOfBadSignedToken()
+    {
+        $accessToken = Factory::createAccessToken(Factory::KEYS.'ekapusta.rsa.test.key');
+
+        $this->provider->getResourceOwner($accessToken);
     }
 }

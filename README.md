@@ -48,7 +48,7 @@ $provider = new EsiaProvider([
 * If you use RSA keys, then `OpensslPkcs7` is enough.
 * If you use GOST keys and compiled PHP with GOST ciphers, then `OpensslPkcs7` is enough.
 * If you use GOST keys and have openssl-compatible tool, then use `OpensslCli`. It has `toolpath` param.
-* If you use GOST keys and you are docker-addict, then you can use `'toolpath' => 'docker run --rm -v $(pwd):$(pwd) -w $(pwd) rnix/openssl-gost openssl'`.
+* If you use GOST keys and you are docker-addict, then you can use `'toolpath' => 'docker run --rm -i -v $(pwd):$(pwd) -w $(pwd) rnix/openssl-gost openssl'`.
 
 
 ### Auth flow
