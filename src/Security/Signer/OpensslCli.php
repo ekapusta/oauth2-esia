@@ -22,7 +22,7 @@ class OpensslCli extends Signer
     public function sign($message)
     {
         return $this->runParameters([
-            'smime -sign -binary -outform DER',
+            'smime -sign -binary -outform DER -noattr',
             '-signer '.escapeshellarg($this->certificatePath),
             '-inkey '.escapeshellarg($this->privateKeyPath),
             '-passin '.escapeshellarg('pass:'.$this->privateKeyPassword),
