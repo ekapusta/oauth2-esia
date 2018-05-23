@@ -38,7 +38,7 @@ class OpensslPkcs7 extends Signer
                 $cert,
                 $privateKey,
                 [],
-                PKCS7_DETACHED | PKCS7_BINARY
+                PKCS7_DETACHED | PKCS7_BINARY | PKCS7_NOATTR
             );
         } finally {
             restore_error_handler();
