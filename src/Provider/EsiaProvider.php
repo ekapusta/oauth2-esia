@@ -200,6 +200,8 @@ class EsiaProvider extends AbstractProvider implements ProviderInterface
 
     protected function createResourceOwner(array $response, AccessToken $token)
     {
-        return new GenericResourceOwner($response, $token->getResourceOwnerId());
+        $response = ['resourceOwnerId' => $token->getResourceOwnerId()] + $response;
+
+        return new GenericResourceOwner($response, 'resourceOwnerId');
     }
 }
