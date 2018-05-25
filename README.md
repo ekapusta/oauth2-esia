@@ -97,10 +97,10 @@ Example $esiaPersonData
 
 ```json
 {
+  "resourceOwnerId": 1000299681,
   "stateFacts": [
     "EntityRoot"
   ],
-  "eTag": "61F2A6BF9D17B97E6B56F8B10EB28A7C814FF0B4",
   "firstName": "Имя006",
   "lastName": "Фамилия006",
   "middleName": "Отчество006",
@@ -123,37 +123,37 @@ Example $esiaPersonData
         "stateFacts": [
           "Identifiable"
         ],
-        "eTag": "F3AA3B18B35BC12E53E0B7A7EAF13EC41EBD02AD",
-        "id": 14244504,
-        "type": "MBT",
-        "vrfStu": "VERIFIED",
-        "vrfValStu": "VERIFYING",
-        "value": "+7(000)0000006",
-        "verifyingValue": "+7(111)1111111",
-        "isCfmCodeExpired": true
-      },
-      {
-        "stateFacts": [
-          "Identifiable"
-        ],
-        "eTag": "943C1145E4973324599CD0E4FF136186502C93C5",
-        "id": 14249750,
-        "type": "PHN",
-        "vrfStu": "NOT_VERIFIED",
-        "value": "+7(840)0000006"
-      },
-      {
-        "stateFacts": [
-          "Identifiable"
-        ],
-        "eTag": "17DCA3945F1B8B54496F59EB146BDC7DADAD7BC8",
         "id": 14216773,
         "type": "EML",
         "vrfStu": "VERIFIED",
-        "vrfValStu": "VERIFYING",
         "value": "EsiaTest006@yandex.ru",
         "verifyingValue": "EsiaTest006@yandex.ru",
-        "isCfmCodeExpired": true
+        "vrfValStu": "VERIFYING",
+        "isCfmCodeExpired": true,
+        "eTag": "17DCA3945F1B8B54496F59EB146BDC7DADAD7BC8"
+      },
+      {
+        "stateFacts": [
+          "Identifiable"
+        ],
+        "id": 14249750,
+        "type": "PHN",
+        "vrfStu": "NOT_VERIFIED",
+        "value": "+7(840)0000006",
+        "eTag": "943C1145E4973324599CD0E4FF136186502C93C5"
+      },
+      {
+        "stateFacts": [
+          "Identifiable"
+        ],
+        "id": 14244504,
+        "type": "MBT",
+        "vrfStu": "VERIFIED",
+        "value": "+7(000)0000006",
+        "verifyingValue": "+7(111)1111111",
+        "vrfValStu": "VERIFYING",
+        "isCfmCodeExpired": true,
+        "eTag": "F3AA3B18B35BC12E53E0B7A7EAF13EC41EBD02AD"
       }
     ]
   },
@@ -168,35 +168,35 @@ Example $esiaPersonData
         "stateFacts": [
           "Identifiable"
         ],
-        "eTag": "C90BE244DC0650255C9D3078C7C7EDEA8013BB6E",
-        "id": 15893,
-        "type": "PRG",
-        "region": "Чувашская Республика",
-        "zipCode": "428022",
+        "id": 530,
+        "type": "PLV",
         "addressStr": "г Чебоксары, пр-кт Мира",
         "fiasCode": "bb5f4fab-64ea-4042-a61b-9b2bdb55442d",
-        "city": "Чебоксары",
+        "flat": "1",
         "countryId": "RUS",
-        "street": "Мира",
         "house": "1",
-        "flat": "1"
+        "zipCode": "428022",
+        "city": "Чебоксары",
+        "street": "Мира",
+        "region": "Чувашская Республика",
+        "eTag": "3553085EBBC08CEBFD73957B7D5BAFDFDA096CCA"
       },
       {
         "stateFacts": [
           "Identifiable"
         ],
-        "eTag": "3553085EBBC08CEBFD73957B7D5BAFDFDA096CCA",
-        "id": 530,
-        "type": "PLV",
-        "region": "Чувашская Республика",
-        "zipCode": "428022",
+        "id": 15893,
+        "type": "PRG",
         "addressStr": "г Чебоксары, пр-кт Мира",
         "fiasCode": "bb5f4fab-64ea-4042-a61b-9b2bdb55442d",
-        "city": "Чебоксары",
+        "flat": "1",
         "countryId": "RUS",
-        "street": "Мира",
         "house": "1",
-        "flat": "1"
+        "zipCode": "428022",
+        "city": "Чебоксары",
+        "street": "Мира",
+        "region": "Чувашская Республика",
+        "eTag": "C90BE244DC0650255C9D3078C7C7EDEA8013BB6E"
       }
     ]
   },
@@ -211,7 +211,6 @@ Example $esiaPersonData
         "stateFacts": [
           "EntityRoot"
         ],
-        "eTag": "2E1F79E93B9DF6F5A579F95069630742D41C6AFB",
         "id": 3571,
         "type": "RF_PASSPORT",
         "vrfStu": "VERIFIED",
@@ -219,20 +218,21 @@ Example $esiaPersonData
         "number": "925695",
         "issueDate": "01.01.2006",
         "issueId": "006006",
-        "issuedBy": "УФМС006"
+        "issuedBy": "УФМС006",
+        "eTag": "2E1F79E93B9DF6F5A579F95069630742D41C6AFB"
       },
       {
         "stateFacts": [
           "EntityRoot"
         ],
-        "eTag": "E9D14F10321D0021A1267B8D363B22B102387735",
         "id": 21213,
         "type": "RF_DRIVING_LICENSE",
         "vrfStu": "NOT_VERIFIED",
         "series": "1222",
         "number": "884455",
         "issueDate": "01.09.2014",
-        "expiryDate": "01.08.2024"
+        "expiryDate": "01.08.2024",
+        "eTag": "E9D14F10321D0021A1267B8D363B22B102387735"
       }
     ]
   },
@@ -247,21 +247,22 @@ Example $esiaPersonData
         "stateFacts": [
           "Identifiable"
         ],
-        "eTag": "A99823275D311CB97A371A420A59AA6BB08B42B7",
         "id": 17743,
         "name": "Моя птичка",
         "numberPlate": "А123АА111",
         "regCertificate": {
           "series": "1231",
           "number": "231231"
-        }
+        },
+        "eTag": "A99823275D311CB97A371A420A59AA6BB08B42B7"
       }
     ]
   },
   "status": "REGISTERED",
   "verifying": false,
   "rIdDoc": 3571,
-  "containsUpCfmCode": false
+  "containsUpCfmCode": false,
+  "eTag": "61F2A6BF9D17B97E6B56F8B10EB28A7C814FF0B4"
 }
 ```
 
