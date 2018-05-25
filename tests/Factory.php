@@ -48,7 +48,7 @@ class Factory
             'EsiaTest006@yandex.ru',
             '11111111',
             !getenv('DISPLAY'),
-            getenv('ESIA_CLIENT_AUTH_METHOD') == 'post'
+            'post' == getenv('ESIA_CLIENT_AUTH_METHOD')
         );
         $bot->setLogger(self::createLogger('authentication-bot'));
 
