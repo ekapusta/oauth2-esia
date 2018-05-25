@@ -96,7 +96,7 @@ class EsiaProviderTest extends TestCase
         $bot = Factory::createAuthenticationBot();
 
         $maxLoginAttempts = getenv('ESIA_LOGIN_ATTEMPTS') ?: 1;
-        for ($loginAttemps = 0; $loginAttemps < $maxLoginAttempts; $loginAttemps++) {
+        for ($loginAttemps = 0; $loginAttemps < $maxLoginAttempts; ++$loginAttemps) {
             $authUrl = $bot->login($loginUrl, $this->redirectUri);
             if ($authUrl) {
                 break;
@@ -178,6 +178,8 @@ class EsiaProviderTest extends TestCase
         $accessToken = new EsiaAccessToken(['access_token' => $accessToken]);
 
         $resourceOwner = $this->provider->getResourceOwner($accessToken);
+
+        $this->assertEquals('1000299681', $resourceOwner->getId());
 
         $info = $resourceOwner->toArray();
 
