@@ -3,7 +3,7 @@
 namespace Ekapusta\OAuth2Esia\Interfaces\Provider;
 
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
-use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 
 interface ProviderInterface
 {
@@ -27,16 +27,16 @@ interface ProviderInterface
      * @param mixed $grant
      * @param array $options
      *
-     * @return AccessToken
+     * @return AccessTokenInterface
      */
     public function getAccessToken($grant, array $options = []);
 
     /**
      * Requests and returns the resource owner of given access token.
      *
-     * @param AccessToken $token
+     * @param AccessTokenInterface $token
      *
      * @return ResourceOwnerInterface
      */
-    public function getResourceOwner(AccessToken $token);
+    public function getResourceOwner(AccessTokenInterface $token);
 }
