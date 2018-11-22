@@ -12,7 +12,7 @@ use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Provider\GenericResourceOwner;
-use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 use League\OAuth2\Client\Tool\BearerAuthorizationTrait;
 use Psr\Http\Message\ResponseInterface;
 use Ramsey\Uuid\Uuid;
@@ -107,7 +107,7 @@ class EsiaProvider extends AbstractProvider implements ProviderInterface
         return $this->getUrl('/aas/oauth2/te');
     }
 
-    public function getResourceOwnerDetailsUrl(AccessToken $token)
+    public function getResourceOwnerDetailsUrl(AccessTokenInterface $token)
     {
         $embeds = $this->getResourceOwnerEmbeds($token);
 
@@ -198,7 +198,7 @@ class EsiaProvider extends AbstractProvider implements ProviderInterface
         return new EsiaAccessToken($response, $this->remoteCertificatePath);
     }
 
-    protected function createResourceOwner(array $response, AccessToken $token)
+    protected function createResourceOwner(array $response, AccessTokenInterface $token)
     {
         $response = ['resourceOwnerId' => $token->getResourceOwnerId()] + $response;
 
