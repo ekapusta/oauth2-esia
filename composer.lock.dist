@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "08c5af6de5dd6452212db32a0c96f51d",
+    "content-hash": "9cf2f0a5ae3acc2f4cd42430ea351959",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -247,21 +247,21 @@
         },
         {
             "name": "league/oauth2-client",
-            "version": "2.3.0",
+            "version": "2.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/oauth2-client.git",
-                "reference": "aa2e3df188f0bfd87f7880cc880e906e99923580"
+                "reference": "4dfceb5b25fe89dba7034de75bb097dfb2ec4b46"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/oauth2-client/zipball/aa2e3df188f0bfd87f7880cc880e906e99923580",
-                "reference": "aa2e3df188f0bfd87f7880cc880e906e99923580",
+                "url": "https://api.github.com/repos/thephpleague/oauth2-client/zipball/4dfceb5b25fe89dba7034de75bb097dfb2ec4b46",
+                "reference": "4dfceb5b25fe89dba7034de75bb097dfb2ec4b46",
                 "shasum": ""
             },
             "require": {
                 "guzzlehttp/guzzle": "^6.0",
-                "paragonie/random_compat": "^1|^2",
+                "paragonie/random_compat": "^1|^2|^9.99",
                 "php": "^5.6|^7.0"
             },
             "require-dev": {
@@ -310,7 +310,7 @@
                 "oauth2",
                 "single sign on"
             ],
-            "time": "2018-01-13T05:27:58+00:00"
+            "time": "2018-11-19T23:15:14+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -1552,6 +1552,7 @@
                 "github",
                 "test"
             ],
+            "abandoned": "php-coveralls/php-coveralls",
             "time": "2017-12-06T23:17:56+00:00"
         },
         {
