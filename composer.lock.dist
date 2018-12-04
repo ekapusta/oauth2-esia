@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "192d6fb59b7f5b759ec15cc653da9e70",
+    "content-hash": "12778f34719e5015219849f60df9842f",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -247,16 +247,16 @@
         },
         {
             "name": "league/oauth2-client",
-            "version": "2.4.0",
+            "version": "2.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/oauth2-client.git",
-                "reference": "88f8381dfdf0dafe59f6694ca914a788918204ca"
+                "reference": "cc114abc622a53af969e8664722e84ca36257530"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/oauth2-client/zipball/88f8381dfdf0dafe59f6694ca914a788918204ca",
-                "reference": "88f8381dfdf0dafe59f6694ca914a788918204ca",
+                "url": "https://api.github.com/repos/thephpleague/oauth2-client/zipball/cc114abc622a53af969e8664722e84ca36257530",
+                "reference": "cc114abc622a53af969e8664722e84ca36257530",
                 "shasum": ""
             },
             "require": {
@@ -310,7 +310,7 @@
                 "oauth2",
                 "single sign on"
             ],
-            "time": "2018-11-21T20:26:42+00:00"
+            "time": "2018-11-22T18:33:57+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -1613,7 +1613,6 @@
                 "github",
                 "test"
             ],
-            "abandoned": "php-coveralls/php-coveralls",
             "time": "2017-12-06T23:17:56+00:00"
         },
         {
