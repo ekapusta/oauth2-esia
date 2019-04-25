@@ -67,7 +67,7 @@ if ($_SESSION['oauth2.esia.state'] !== $_GET['state']) {
     exit('The guard unravels the crossword.');
 }
 
-$token = $provider->getAccessToken('authorization_code', ['code' => $_GET['code']]);
+$accessToken = $provider->getAccessToken('authorization_code', ['code' => $_GET['code']]);
 $esiaPersonData = $provider->getResourceOwner($accessToken);
 var_export($esiaPersonData->toArray());
 ```
