@@ -179,7 +179,7 @@ class EsiaProviderTest extends TestCase
 
         $resourceOwner = $this->provider->getResourceOwner($accessToken);
 
-        $this->assertEquals('1000299681', $resourceOwner->getId());
+        $this->assertEquals('1000404446', $resourceOwner->getId());
 
         $info = $resourceOwner->toArray();
 
