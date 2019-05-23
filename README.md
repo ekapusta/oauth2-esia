@@ -97,7 +97,7 @@ Example $esiaPersonData
 
 ```json
 {
-  "resourceOwnerId": 1000299681,
+  "resourceOwnerId": 1000404446,
   "stateFacts": [
     "EntityRoot"
   ],
