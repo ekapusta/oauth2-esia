@@ -6,6 +6,7 @@ use Ekapusta\OAuth2Esia\Interfaces\Provider\ProviderInterface;
 use Ekapusta\OAuth2Esia\Interfaces\Security\SignerInterface;
 use Ekapusta\OAuth2Esia\Interfaces\Token\ScopedTokenInterface;
 use Ekapusta\OAuth2Esia\Token\EsiaAccessToken;
+use Ekapusta\OAuth2Esia\JwtVerifier\RsaSha256Verifier;
 use InvalidArgumentException;
 use Lcobucci\JWT\Parsing\Encoder;
 use League\OAuth2\Client\Grant\AbstractGrant;
@@ -27,6 +28,8 @@ class EsiaProvider extends AbstractProvider implements ProviderInterface
 
     protected $remoteUrl = 'https://esia.gosuslugi.ru';
 
+    protected $jwtSignVerifier;
+
     protected $remoteCertificatePath = self::RESOURCES.'esia.prod.cer';
 
     /**
@@ -45,15 +48,24 @@ class EsiaProvider extends AbstractProvider implements ProviderInterface
         if (!filter_var($this->remoteUrl, FILTER_VALIDATE_URL)) {
             throw new InvalidArgumentException('Remote URL is not provided!');
         }
-        if (!file_exists($this->remoteCertificatePath)) {
-            throw new InvalidArgumentException('Remote certificate is not provided!');
-        }
 
         if (isset($collaborators['signer']) && $collaborators['signer'] instanceof SignerInterface) {
             $this->signer = $collaborators['signer'];
             $this->encoder = new Encoder();
         } else {
             throw new InvalidArgumentException('Signer is not provided!');
+        }
+
+        if (!array_key_exists('jwtTokenSignVerifier', $options)) {
+            if (!file_exists($this->remoteCertificatePath)) {
+                throw new InvalidArgumentException('Remote certificate is not provided!');
+            }
+
+            $this->jwtSignVerifier = new RsaSha256Verifier($this->remoteCertificatePath);
+        } else {
+            if ($options['jwtTokenSignVerifier']) {
+                $this->jwtSignVerifier = $options['jwtTokenSignVerifier'];
+            }
         }
     }
 
@@ -195,7 +207,7 @@ class EsiaProvider extends AbstractProvider implements ProviderInterface
 
     protected function createAccessToken(array $response, AbstractGrant $grant)
     {
-        return new EsiaAccessToken($response, $this->remoteCertificatePath);
+        return new EsiaAccessToken($response, $this->jwtSignVerifier);
     }
 
     protected function createResourceOwner(array $response, AccessToken $token)
