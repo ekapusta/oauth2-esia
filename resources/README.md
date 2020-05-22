@@ -16,3 +16,13 @@ View
 
     openssl asn1parse -i -in ekapusta.gost.test.cer
     openssl asn1parse -i -in ekapusta.rsa.test.cer
+
+Download GOST ESIA certs 
+----
+
+```
+wget http://esia.gosuslugi.ru/public/esia.zip
+...
+openssl x509 -inform der -in ГОСТ12_ТЕСИА.cer -out esia.gost.test.cer
+openssl x509 -inform der -in "ГОСТ 2012 ПРОД.cer" -out esia.gost.prod.cer
+```
