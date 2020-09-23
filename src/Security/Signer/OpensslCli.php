@@ -41,6 +41,7 @@ class OpensslCli extends Signer
      */
     private function run($command, $input)
     {
+        $pipes = [];
         $process = proc_open($command, [
             ['pipe', 'r'], // stdin
             ['pipe', 'w'], // stdout

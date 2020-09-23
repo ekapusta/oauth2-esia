@@ -51,6 +51,7 @@ class AuthenticationBot
 
         $this->logger->debug("Requesting command $command");
 
+        $pipes = [];
         $process = proc_open($command, [
             ['pipe', 'r'], // stdin
             ['pipe', 'w'], // stdout
@@ -70,6 +71,8 @@ class AuthenticationBot
 
         fclose($pipes[1]);
         fclose($pipes[2]);
+
+        proc_close($process);
 
         $this->logger->debug("Response \n$response");
 
