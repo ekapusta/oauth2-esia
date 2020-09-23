@@ -46,6 +46,7 @@
     "sort-packages": true
   },
   "scripts": {
+    "f": "@fix",
     "fix": "php-cs-fixer fix --ansi",
     "test": "phpunit --columns max --color=always",
     "debug": "phpunit --columns max --color=always --debug",
