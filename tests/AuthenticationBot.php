@@ -76,8 +76,6 @@ class AuthenticationBot
             $this->logger->debug("Code: $code\n");
         }
 
-        proc_close($process);
-
         $this->logger->debug("Response \n$response");
 
         return trim($response);
