@@ -71,7 +71,10 @@ class AuthenticationBot
 
         fclose($pipes[1]);
         fclose($pipes[2]);
-        proc_close($process);
+        if (is_resource($process)) {
+            $code = proc_close($process);
+            $this->logger->debug("Code: $code\n");
+        }
 
         proc_close($process);
 
