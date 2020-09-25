@@ -70,6 +70,7 @@ class AuthenticationBot
 
         fclose($pipes[1]);
         fclose($pipes[2]);
+        proc_close($process);
 
         $this->logger->debug("Response \n$response");
 
