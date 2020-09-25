@@ -15,8 +15,6 @@ interface ProviderInterface
     /**
      * Builds the authorization URL.
      *
-     * @param array $options
-     *
      * @return string Authorization URL
      */
     public function getAuthorizationUrl(array $options = []);
@@ -25,7 +23,6 @@ interface ProviderInterface
      * Requests an access token using a specified grant and option set.
      *
      * @param mixed $grant
-     * @param array $options
      *
      * @return AccessToken
      */
@@ -33,8 +30,6 @@ interface ProviderInterface
 
     /**
      * Requests and returns the resource owner of given access token.
-     *
-     * @param AccessToken $token
      *
      * @return ResourceOwnerInterface
      */

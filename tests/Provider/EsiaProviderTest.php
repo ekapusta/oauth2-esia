@@ -115,6 +115,7 @@ class EsiaProviderTest extends TestCase
      */
     public function testAccessTokenRequested($authUrl)
     {
+        $url = null;
         parse_str(parse_url($authUrl, PHP_URL_QUERY), $url);
 
         $this->assertInternalType('array', $url);
@@ -186,7 +187,7 @@ class EsiaProviderTest extends TestCase
         $this->assertInternalType('array', $info);
         $this->assertArrayHasKey('firstName', $info);
 
-        $this->assertEquals('Имя006', $info['firstName']);
+        $this->assertRegExp('/^[А-Я][а-я0-9]+$/u', $info['firstName']);
 
         Factory::createLogger('esia-provider')->warning('Person info', $info);
     }

@@ -51,6 +51,7 @@ class AuthenticationBot
 
         $this->logger->debug("Requesting command $command");
 
+        $pipes = [];
         $process = proc_open($command, [
             ['pipe', 'r'], // stdin
             ['pipe', 'w'], // stdout

@@ -74,8 +74,6 @@ class EsiaProvider extends AbstractProvider implements ProviderInterface
     }
 
     /**
-     * @param array $params
-     *
      * @return array
      */
     private function withClientSecret(array $params)
@@ -185,11 +183,7 @@ class EsiaProvider extends AbstractProvider implements ProviderInterface
     protected function checkResponse(ResponseInterface $response, $data)
     {
         if ($response->getStatusCode() >= 400 || isset($data['error'])) {
-            throw new IdentityProviderException(
-                isset($data['error']) ? $data['error'] : $response->getReasonPhrase(),
-                $response->getStatusCode(),
-                (string) $response->getBody()
-            );
+            throw new IdentityProviderException(isset($data['error']) ? $data['error'] : $response->getReasonPhrase(), $response->getStatusCode(), (string) $response->getBody());
         }
     }
 
