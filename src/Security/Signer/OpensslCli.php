@@ -8,6 +8,7 @@ use Ekapusta\OAuth2Esia\Security\Signer\Exception\SignException;
 class OpensslCli extends Signer
 {
     private $toolPath;
+    private $middleParams;
 
     public function __construct(
         $certificatePath,
@@ -16,6 +17,10 @@ class OpensslCli extends Signer
         $toolPath = 'openssl'
     ) {
         parent::__construct($certificatePath, $privateKeyPath, $privateKeyPassword);
+        if (is_array($toolPath) && count($toolPath) == 2) {
+            $this->middleParams = end($toolPath);
+            $toolPath = reset($toolPath);
+        }
         $this->toolPath = $toolPath;
     }
 
@@ -23,6 +28,7 @@ class OpensslCli extends Signer
     {
         return $this->runParameters([
             'smime -sign -binary -outform DER -noattr',
+            $this->middleParams,
             '-signer '.escapeshellarg($this->certificatePath),
             '-inkey '.escapeshellarg($this->privateKeyPath),
             '-passin '.escapeshellarg('pass:'.$this->privateKeyPassword),
