@@ -3,6 +3,7 @@
 namespace Ekapusta\OAuth2Esia\Tests\Provider;
 
 use Ekapusta\OAuth2Esia\Provider\EsiaProvider;
+use Ekapusta\OAuth2Esia\Security\JWTSigner\OpenSslCliJwtSigner;
 use Ekapusta\OAuth2Esia\Security\Signer\OpensslCli;
 use Ekapusta\OAuth2Esia\Tests\Factory;
 use Ekapusta\OAuth2Esia\Token\EsiaAccessToken;
@@ -34,9 +35,13 @@ class EsiaProviderTest extends TestCase
 
         $this->redirectUri = 'https://system.dev/esia/auth';
 
+        $clientId = getenv('ESIA_CLIENT_ID') ?: '500201';
         $signerClass = getenv('ESIA_SIGNER_CLASS') ?: OpensslCli::class;
-        $certificate = getenv('ESIA_CERTIFICATE') ?: 'ekapusta.gost.test.cer';
-        $privateKey = getenv('ESIA_PRIVATE_KEY') ?: 'ekapusta.gost.test.key';
+        $certificate = getenv('ESIA_CERTIFICATE') ?: 'ekapusta.gost2012.test.cer';
+        $privateKey = getenv('ESIA_PRIVATE_KEY') ?: 'ekapusta.gost2012.test.key';
+        $remoteSignerClass = getenv('ESIA_REMOTE_SIGNER_CLASS') ?: OpenSslCliJwtSigner::class;
+        $remotePublicKey = getenv('ESIA_REMOTE_PUBLIC_KEY') ?: 'esia.gost.test.public.key';
+        $remoteAlgorythmId = getenv('ESIA_REMOTE_ALGORYTHM_ID') ?: 'GOST3410_2012_256';
 
         $this->signer = new $signerClass(
             Factory::KEYS.$certificate,
@@ -46,37 +51,38 @@ class EsiaProviderTest extends TestCase
             '-engine gost'
         );
         $this->provider = new EsiaProvider([
-            'clientId' => 'EKAP01',
+            'clientId' => $clientId,
             'redirectUri' => $this->redirectUri,
             'remoteUrl' => 'https://esia-portal1.test.gosuslugi.ru',
-            'remotePublicKey' => EsiaProvider::RESOURCES.'esia.test.public.key',
+            'remotePublicKey' => EsiaProvider::RESOURCES.$remotePublicKey,
             'defaultScopes' => [
                 // needed for authenticating
                 'openid',
 
                 // root entity
                 'fullname',
-                'birthdate',
-                'gender',
+//                 'birthdate',
+//                 'gender',
                 'snils',
-                'inn',
-                'birthplace',
+//                 'inn',
+//                 'birthplace',
 
-                // docs collections
+//                 // docs collections
                 'id_doc',
-                'drivers_licence_doc',
+//                 'drivers_licence_doc',
 
-                // vehicles collection
-                'vehicles',
+//                 // vehicles collection
+//                 'vehicles',
 
-                // contacts collection
-                'email',
-                'mobile',
-                'contacts',
+//                 // contacts collection
+//                 'email',
+//                 'mobile',
+//                 'contacts',
             ],
         ], [
             'httpClient' => new HttpClient(['handler' => $httpStack]),
             'signer' => $this->signer,
+            'remoteSigner' => new $remoteSignerClass(getenv('ESIA_CLIENT_OPENSSL_TOOL_PATH') ?: 'openssl', $remoteAlgorythmId),
         ]);
     }
 
@@ -126,7 +132,7 @@ class EsiaProviderTest extends TestCase
             'code' => $url['code'],
         ]);
 
-        return $accessToken->getToken();
+        return $accessToken;
     }
 
     /**
@@ -185,10 +191,8 @@ class EsiaProviderTest extends TestCase
     /**
      * @depends testAccessTokenRequested
      */
-    public function testPersonGeneralInfoRequested($accessToken)
+    public function testPersonGeneralInfoRequested(EsiaAccessToken $accessToken)
     {
-        $accessToken = new EsiaAccessToken(['access_token' => $accessToken]);
-
         $resourceOwner = $this->provider->getResourceOwner($accessToken);
 
         $this->assertEquals('1000404446', $resourceOwner->getId());
@@ -210,7 +214,10 @@ class EsiaProviderTest extends TestCase
      */
     public function testPersonGeneralInfoFailsAsOfBadSignedToken()
     {
-        $accessToken = Factory::createAccessToken(Factory::KEYS.'ekapusta.rsa.test.key');
+        $accessToken = Factory::createAccessToken(
+            Factory::KEYS.'ekapusta.rsa.test.key',
+            Factory::KEYS.'ekapusta.rsa.test.cer'
+        );
 
         $this->provider->getResourceOwner($accessToken);
     }

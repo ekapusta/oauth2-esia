@@ -4,6 +4,7 @@ namespace Ekapusta\OAuth2Esia\Tests\Token;
 
 use Ekapusta\OAuth2Esia\Tests\Factory;
 use Ekapusta\OAuth2Esia\Token\EsiaAccessToken;
+use Lcobucci\JWT\Signer\Rsa\Sha256;
 use PHPUnit\Framework\TestCase;
 
 class EsiaAccessTokenTest extends TestCase
@@ -16,7 +17,7 @@ class EsiaAccessTokenTest extends TestCase
     {
         new EsiaAccessToken([
             'access_token' => file_get_contents(__DIR__.'/../Fixtures/expired.token.txt'),
-        ]);
+        ], 'anything', new Sha256());
     }
 
     /**
@@ -49,5 +50,41 @@ class EsiaAccessTokenTest extends TestCase
     public function testScopesExtracted(EsiaAccessToken $token)
     {
         $this->assertEquals(['one', 'two', 'three'], $token->getScopes());
+    }
+
+    public function testGostFullyValidAndScopesExtraced()
+    {
+        $esiaToken = Factory::createGostAccessToken(
+            Factory::KEYS.'another.gost.test.key',
+            Factory::KEYS.'another.gost.test.public.key'
+        );
+
+        $this->assertInstanceOf(EsiaAccessToken::class, $esiaToken);
+
+        $this->assertEquals(['one', 'two', 'three'], $esiaToken->getScopes());
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage unable to load
+     */
+    public function testGostIsInvalid()
+    {
+        Factory::createGostAccessToken(
+            Factory::KEYS.'another.gost.test.key',
+            '/dev/null'
+        );
+    }
+
+    public function testRsaFullyValidAndScopesExtraced()
+    {
+        $esiaToken = Factory::createRsaAccessToken(
+            Factory::KEYS.'ekapusta.rsa.test.key',
+            Factory::KEYS.'ekapusta.rsa.test.public.key'
+        );
+
+        $this->assertInstanceOf(EsiaAccessToken::class, $esiaToken);
+
+        $this->assertEquals(['one', 'two', 'three'], $esiaToken->getScopes());
     }
 }
