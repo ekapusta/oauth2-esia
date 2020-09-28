@@ -27,7 +27,7 @@ class EsiaAccessTokenTest extends TestCase
     {
         Factory::createAccessToken(
             Factory::KEYS.'ekapusta.rsa.test.key',
-            Factory::KEYS.'another.rsa.test.cer'
+            Factory::KEYS.'another.rsa.test.public.key'
         );
     }
 
@@ -35,7 +35,7 @@ class EsiaAccessTokenTest extends TestCase
     {
         $esiaToken = Factory::createAccessToken(
             Factory::KEYS.'ekapusta.rsa.test.key',
-            Factory::KEYS.'ekapusta.rsa.test.cer'
+            Factory::KEYS.'ekapusta.rsa.test.public.key'
         );
 
         $this->assertInstanceOf(EsiaAccessToken::class, $esiaToken);
