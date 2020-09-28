@@ -15,7 +15,7 @@ class OpensslCliTest extends SignerTest
     ) {
         return new OpensslCli(
             $certificatePath ?: $this->pathToCertificate(),
-            $privateKeyPath ?: Factory::KEYS.'another.gost.test.key',
+            $privateKeyPath ?: Factory::KEYS.'ekapusta.gost.test.key',
             $privateKeyPassword,
             getenv('ESIA_CLIENT_OPENSSL_TOOL_PATH') ?: ['openssl', '-engine gost']
         );
@@ -23,11 +23,11 @@ class OpensslCliTest extends SignerTest
 
     protected function pathToCertificate()
     {
-        return Factory::KEYS.'another.gost.test.cer';
+        return Factory::KEYS.'ekapusta.gost.test.cer';
     }
 
     protected function pathToAnotherCertificate()
     {
-        return Factory::KEYS.'ekapusta.gost.test.cer';
+        return Factory::KEYS.'another.gost.test.cer';
     }
 }
