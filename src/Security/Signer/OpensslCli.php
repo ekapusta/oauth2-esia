@@ -17,7 +17,7 @@ class OpensslCli extends Signer
         $toolPath = 'openssl'
     ) {
         parent::__construct($certificatePath, $privateKeyPath, $privateKeyPassword);
-        if (is_array($toolPath) && count($toolPath) == 2) {
+        if (is_array($toolPath) && 2 == count($toolPath)) {
             $this->middleParams = end($toolPath);
             $toolPath = reset($toolPath);
         }
