@@ -32,7 +32,7 @@ install:
   - (cd tests/AuthenticationBot && npm install --no-progress)
 
 before_script:
-  - export ESIA_CLIENT_OPENSSL_TOOL_PATH="docker run --rm -i -v /tmp:/tmp -v $(pwd):$(pwd) -w $(pwd) rnix/openssl-gost openssl"
+  - export ESIA_CLIENT_OPENSSL_TOOL_PATH="docker run --rm -i -v $(pwd):$(pwd) -w $(pwd) rnix/openssl-gost openssl"
   - export ESIA_LOGIN_ATTEMPTS=3
 
 script:
