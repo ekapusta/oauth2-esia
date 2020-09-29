@@ -8,6 +8,8 @@ use Ekapusta\OAuth2Esia\Interfaces\Token\ScopedTokenInterface;
 use Ekapusta\OAuth2Esia\Token\EsiaAccessToken;
 use InvalidArgumentException;
 use Lcobucci\JWT\Parsing\Encoder;
+use Lcobucci\JWT\Signer;
+use Lcobucci\JWT\Signer\Rsa\Sha256;
 use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
@@ -39,6 +41,11 @@ class EsiaProvider extends AbstractProvider implements ProviderInterface
      */
     private $encoder;
 
+    /**
+     * @var Signer
+     */
+    private $remoteSigner;
+
     public function __construct(array $options = [], array $collaborators = [])
     {
         // Backward compatibility as of rename remoteCertificatePath -> remotePublicKey
@@ -59,6 +66,11 @@ class EsiaProvider extends AbstractProvider implements ProviderInterface
             $this->encoder = new Encoder();
         } else {
             throw new InvalidArgumentException('Signer is not provided!');
+        }
+
+        $this->remoteSigner = new Sha256();
+        if (isset($collaborators['remoteSigner']) && $collaborators['remoteSigner'] instanceof Signer) {
+            $this->remoteSigner = $collaborators['remoteSigner'];
         }
     }
 
@@ -194,7 +206,7 @@ class EsiaProvider extends AbstractProvider implements ProviderInterface
 
     protected function createAccessToken(array $response, AbstractGrant $grant)
     {
-        return new EsiaAccessToken($response, $this->remotePublicKey);
+        return new EsiaAccessToken($response, $this->remotePublicKey, $this->remoteSigner);
     }
 
     protected function createResourceOwner(array $response, AccessToken $token)

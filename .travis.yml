@@ -8,14 +8,31 @@ matrix:
   include:
   - php:  "5.6"
     env:  ESIA_CLIENT_AUTH_METHOD=get
+          ESIA_CLIENT_ID=EKAP01
           ESIA_SIGNER_CLASS=Ekapusta\\OAuth2Esia\\Security\\Signer\\OpensslCli
           ESIA_CERTIFICATE=ekapusta.gost.test.cer
           ESIA_PRIVATE_KEY=ekapusta.gost.test.key
+          ESIA_REMOTE_PUBLIC_KEY=esia.test.public.key
+          ESIA_REMOTE_ALGORYTHM_ID=RS256
+          ESIA_REMOTE_SIGNER_CLASS=Lcobucci\\JWT\\Signer\\Rsa\\Sha256
   - php:  "7.1"
     env:  ESIA_CLIENT_AUTH_METHOD=post
+          ESIA_CLIENT_ID=EKAP01
           ESIA_SIGNER_CLASS=Ekapusta\\OAuth2Esia\\Security\\Signer\\OpensslPkcs7
           ESIA_CERTIFICATE=ekapusta.rsa.test.cer
           ESIA_PRIVATE_KEY=ekapusta.rsa.test.key
+          ESIA_REMOTE_PUBLIC_KEY=esia.test.public.key
+          ESIA_REMOTE_ALGORYTHM_ID=RS256
+          ESIA_REMOTE_SIGNER_CLASS=Ekapusta\\OAuth2Esia\\Security\\JWTSigner\\OpenSslCliJwtSigner
+  - php:  "7.3"
+    env:  ESIA_CLIENT_AUTH_METHOD=get
+          ESIA_CLIENT_ID=500201
+          ESIA_SIGNER_CLASS=Ekapusta\\OAuth2Esia\\Security\\Signer\\OpensslCli
+          ESIA_CERTIFICATE=ekapusta.gost2012.test.cer
+          ESIA_PRIVATE_KEY=ekapusta.gost2012.test.key
+          ESIA_REMOTE_PUBLIC_KEY=esia.gost.test.public.key
+          ESIA_REMOTE_ALGORYTHM_ID=GOST3410_2012_256
+          ESIA_REMOTE_SIGNER_CLASS=Ekapusta\\OAuth2Esia\\Security\\JWTSigner\\OpenSslCliJwtSigner
 
 services:
   - docker
@@ -32,7 +49,7 @@ install:
   - (cd tests/AuthenticationBot && npm install --no-progress)
 
 before_script:
-  - export ESIA_CLIENT_OPENSSL_TOOL_PATH="docker run --rm -i -v $(pwd):$(pwd) -w $(pwd) rnix/openssl-gost openssl"
+  - export ESIA_CLIENT_OPENSSL_TOOL_PATH="docker run --rm -i -v $(pwd):$(pwd) -v /tmp:/tmp -w $(pwd) rnix/openssl-gost openssl"
   - export ESIA_LOGIN_ATTEMPTS=3
 
 script:
