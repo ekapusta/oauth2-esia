@@ -27,7 +27,7 @@ class EsiaProvider extends AbstractProvider implements ProviderInterface
 
     protected $remoteUrl = 'https://esia.gosuslugi.ru';
 
-    protected $remoteCertificatePath = self::RESOURCES.'esia.prod.cer';
+    protected $remotePublicKey = self::RESOURCES.'esia.prod.public.key';
 
     /**
      * @var SignerInterface
@@ -41,12 +41,17 @@ class EsiaProvider extends AbstractProvider implements ProviderInterface
 
     public function __construct(array $options = [], array $collaborators = [])
     {
+        // Backward compatibility as of rename remoteCertificatePath -> remotePublicKey
+        if (isset($options['remoteCertificatePath'])) {
+            $options['remotePublicKey'] = $options['remoteCertificatePath'];
+        }
+
         parent::__construct($options, $collaborators);
         if (!filter_var($this->remoteUrl, FILTER_VALIDATE_URL)) {
             throw new InvalidArgumentException('Remote URL is not provided!');
         }
-        if (!file_exists($this->remoteCertificatePath)) {
-            throw new InvalidArgumentException('Remote certificate is not provided!');
+        if (!file_exists($this->remotePublicKey)) {
+            throw new InvalidArgumentException('Remote public key is not provided!');
         }
 
         if (isset($collaborators['signer']) && $collaborators['signer'] instanceof SignerInterface) {
@@ -189,7 +194,7 @@ class EsiaProvider extends AbstractProvider implements ProviderInterface
 
     protected function createAccessToken(array $response, AbstractGrant $grant)
     {
-        return new EsiaAccessToken($response, $this->remoteCertificatePath);
+        return new EsiaAccessToken($response, $this->remotePublicKey);
     }
 
     protected function createResourceOwner(array $response, AccessToken $token)

@@ -16,3 +16,9 @@ View
 
     openssl asn1parse -i -in ekapusta.gost.test.cer
     openssl asn1parse -i -in ekapusta.rsa.test.cer
+
+
+Extract public keys from certs
+------------------------------
+
+    for CERT in *.cer; do openssl x509 -engine gost -noout -pubkey -in $CERT -out ${CERT%.*}.public.key; done

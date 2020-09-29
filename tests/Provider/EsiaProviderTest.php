@@ -35,8 +35,8 @@ class EsiaProviderTest extends TestCase
         $this->redirectUri = 'https://system.dev/esia/auth';
 
         $signerClass = getenv('ESIA_SIGNER_CLASS') ?: OpensslCli::class;
-        $certificate = getenv('ESIA_CERTIFICATE') ?: 'another.gost.test.cer';
-        $privateKey = getenv('ESIA_PRIVATE_KEY') ?: 'another.gost.test.key';
+        $certificate = getenv('ESIA_CERTIFICATE') ?: 'ekapusta.gost.test.cer';
+        $privateKey = getenv('ESIA_PRIVATE_KEY') ?: 'ekapusta.gost.test.key';
 
         $this->signer = new $signerClass(
             Factory::KEYS.$certificate,
@@ -48,7 +48,7 @@ class EsiaProviderTest extends TestCase
             'clientId' => 'EKAP01',
             'redirectUri' => $this->redirectUri,
             'remoteUrl' => 'https://esia-portal1.test.gosuslugi.ru',
-            'remoteCertificatePath' => EsiaProvider::RESOURCES.'esia.test.cer',
+            'remotePublicKey' => EsiaProvider::RESOURCES.'esia.test.public.key',
             'defaultScopes' => [
                 // needed for authenticating
                 'openid',
@@ -164,11 +164,21 @@ class EsiaProviderTest extends TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Remote certificate is not provided!
+     * @expectedExceptionMessage Remote public key is not provided!
      */
-    public function testRemoteCertificateIsRequired()
+    public function testRemotePublicKeyIsRequired()
     {
-        new EsiaProvider(['remoteCertificatePath' => ''], ['signer' => $this->signer]);
+        new EsiaProvider(['remotePublicKey' => ''], ['signer' => $this->signer]);
+    }
+
+    /**
+     * Provider uses remoteCertificate as alias of remotePublicKey.
+     */
+    public function testRemoteCertificateIsRenamedToPublicKey()
+    {
+        new EsiaProvider(['remoteCertificatePath' => '/dev/null', 'remotePublicKey' => ''], ['signer' => $this->signer]);
+
+        $this->assertTrue(true);
     }
 
     /**
