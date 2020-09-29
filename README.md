@@ -29,6 +29,7 @@ Usage is the same as the normal client, using `Ekapusta\OAuth2Esia\Provider\Esia
 
 ```php
 use Ekapusta\OAuth2Esia\Provider\EsiaProvider;
+use Ekapusta\OAuth2Esia\Security\JWTSigner\OpenSslCliJwtSigner;
 use Ekapusta\OAuth2Esia\Security\Signer\OpensslPkcs7;
 
 $provider = new EsiaProvider([
@@ -37,9 +38,13 @@ $provider = new EsiaProvider([
     'defaultScopes' => ['openid', 'fullname', '...'],
 // For work with test portal version
 //  'remoteUrl' => 'https://esia-portal1.test.gosuslugi.ru',
-//  'remoteCertificatePath' => EsiaProvider::RESOURCES.'esia.test.cer',
+//  'remotePublicKey' => EsiaProvider::RESOURCES.'esia.test.public.key',
+// For work with GOST3410_2012_256 signatures (instead of default RS256)
+//  'remoteCertificatePath' => EsiaProvider::RESOURCES.'esia.gost.prod.public.key',
 ], [
-    'signer' => new OpensslPkcs7('/path/to/public/certificate.cer', '/path/to/private.key')
+    'signer' => new OpensslPkcs7('/path/to/public/certificate.cer', '/path/to/private.key'),
+// For work with GOST3410_2012_256 signatures (instead of default RS256)
+//    'remoteSigner' => new OpenSslCliJwtSigner('/path/to/openssl'),
 ]);
 ```
 
@@ -50,6 +55,12 @@ $provider = new EsiaProvider([
 * If you use GOST keys and have openssl-compatible tool, then use `OpensslCli`. It has `toolpath` param.
 * If you use GOST keys and you are docker-addict, then you can use `'toolpath' => 'docker run --rm -i -v $(pwd):$(pwd) -w $(pwd) rnix/openssl-gost openssl'`.
 
+
+## Which remote signer to use?
+
+* If your system electronic signature algorythm is default RS256, then do nothing.
+Under the hood it uses Sha256 remote signer.
+* If you use GOST3410_2012_256 signature, then use `OpenSslCliJwtSigner`, passing to it path to `openssl` tool. For dockers pass to it something like `docker run --rm -i -v $(pwd):$(pwd) -v /tmp/tmp -w $(pwd) rnix/openssl-gost openssl'`. `/tmp ` volume is important there!
 
 ### Auth flow
 

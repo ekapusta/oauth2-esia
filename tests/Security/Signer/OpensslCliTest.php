@@ -17,7 +17,8 @@ class OpensslCliTest extends SignerTest
             $certificatePath ?: $this->pathToCertificate(),
             $privateKeyPath ?: Factory::KEYS.'ekapusta.gost.test.key',
             $privateKeyPassword,
-            getenv('ESIA_CLIENT_OPENSSL_TOOL_PATH') ?: ['openssl', '-engine gost']
+            getenv('ESIA_CLIENT_OPENSSL_TOOL_PATH') ?: 'openssl',
+            '-engine gost'
         );
     }
 

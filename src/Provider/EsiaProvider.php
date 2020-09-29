@@ -8,6 +8,8 @@ use Ekapusta\OAuth2Esia\Interfaces\Token\ScopedTokenInterface;
 use Ekapusta\OAuth2Esia\Token\EsiaAccessToken;
 use InvalidArgumentException;
 use Lcobucci\JWT\Parsing\Encoder;
+use Lcobucci\JWT\Signer;
+use Lcobucci\JWT\Signer\Rsa\Sha256;
 use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
@@ -27,7 +29,7 @@ class EsiaProvider extends AbstractProvider implements ProviderInterface
 
     protected $remoteUrl = 'https://esia.gosuslugi.ru';
 
-    protected $remoteCertificatePath = self::RESOURCES.'esia.prod.cer';
+    protected $remotePublicKey = self::RESOURCES.'esia.prod.public.key';
 
     /**
      * @var SignerInterface
@@ -39,14 +41,24 @@ class EsiaProvider extends AbstractProvider implements ProviderInterface
      */
     private $encoder;
 
+    /**
+     * @var Signer
+     */
+    private $remoteSigner;
+
     public function __construct(array $options = [], array $collaborators = [])
     {
+        // Backward compatibility as of rename remoteCertificatePath -> remotePublicKey
+        if (isset($options['remoteCertificatePath'])) {
+            $options['remotePublicKey'] = $options['remoteCertificatePath'];
+        }
+
         parent::__construct($options, $collaborators);
         if (!filter_var($this->remoteUrl, FILTER_VALIDATE_URL)) {
             throw new InvalidArgumentException('Remote URL is not provided!');
         }
-        if (!file_exists($this->remoteCertificatePath)) {
-            throw new InvalidArgumentException('Remote certificate is not provided!');
+        if (!file_exists($this->remotePublicKey)) {
+            throw new InvalidArgumentException('Remote public key is not provided!');
         }
 
         if (isset($collaborators['signer']) && $collaborators['signer'] instanceof SignerInterface) {
@@ -54,6 +66,11 @@ class EsiaProvider extends AbstractProvider implements ProviderInterface
             $this->encoder = new Encoder();
         } else {
             throw new InvalidArgumentException('Signer is not provided!');
+        }
+
+        $this->remoteSigner = new Sha256();
+        if (isset($collaborators['remoteSigner']) && $collaborators['remoteSigner'] instanceof Signer) {
+            $this->remoteSigner = $collaborators['remoteSigner'];
         }
     }
 
@@ -189,7 +206,7 @@ class EsiaProvider extends AbstractProvider implements ProviderInterface
 
     protected function createAccessToken(array $response, AbstractGrant $grant)
     {
-        return new EsiaAccessToken($response, $this->remoteCertificatePath);
+        return new EsiaAccessToken($response, $this->remotePublicKey, $this->remoteSigner);
     }
 
     protected function createResourceOwner(array $response, AccessToken $token)

@@ -5,8 +5,10 @@ namespace Ekapusta\OAuth2Esia\Tests;
 use Bramus\Monolog\Formatter\ColoredLineFormatter;
 use Bramus\Monolog\Formatter\ColorSchemes\TrafficLight;
 use Ekapusta\OAuth2Esia\Provider\EsiaProvider;
+use Ekapusta\OAuth2Esia\Security\JWTSigner\OpenSslCliJwtSigner;
 use Ekapusta\OAuth2Esia\Token\EsiaAccessToken;
 use Lcobucci\JWT\Builder;
+use Lcobucci\JWT\Signer;
 use Lcobucci\JWT\Signer\Key;
 use Lcobucci\JWT\Signer\Rsa\Sha256;
 use Monolog\Handler\NullHandler;
@@ -58,17 +60,37 @@ class Factory
     /**
      * @return EsiaAccessToken
      */
-    public static function createAccessToken($privateKeyPath, $publicKeyPath = null)
+    public static function createAccessToken($privateKeyPath, $publicKeyPath, Signer $signer = null)
     {
+        if (null == $signer) {
+            $signer = new Sha256();
+        }
+
         $accessToken = (new Builder())
             ->setIssuedAt(time())
             ->setNotBefore(time())
             ->setExpiration(time() + 3600)
             ->set('urn:esia:sbj_id', 1)
             ->set('scope', 'one?oid=123 two?oid=456 three?oid=789')
-            ->sign(new Sha256(), new Key(file_get_contents($privateKeyPath)))
+            ->sign($signer, new Key(file_get_contents($privateKeyPath)))
             ->getToken();
 
-        return new EsiaAccessToken(['access_token' => (string) $accessToken], $publicKeyPath);
+        return new EsiaAccessToken(['access_token' => (string) $accessToken], $publicKeyPath, $signer);
+    }
+
+    /**
+     * @return EsiaAccessToken
+     */
+    public static function createGostAccessToken($privateKeyPath, $publicKeyPath)
+    {
+        return self::createAccessToken($privateKeyPath, $publicKeyPath, new OpenSslCliJwtSigner(getenv('ESIA_CLIENT_OPENSSL_TOOL_PATH') ?: 'openssl'));
+    }
+
+    /**
+     * @return EsiaAccessToken
+     */
+    public static function createRsaAccessToken($privateKeyPath, $publicKeyPath)
+    {
+        return self::createAccessToken($privateKeyPath, $publicKeyPath, new OpenSslCliJwtSigner(getenv('ESIA_CLIENT_OPENSSL_TOOL_PATH') ?: 'openssl', 'RS256'));
     }
 }
