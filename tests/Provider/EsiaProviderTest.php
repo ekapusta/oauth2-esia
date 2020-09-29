@@ -42,7 +42,8 @@ class EsiaProviderTest extends TestCase
             Factory::KEYS.$certificate,
             Factory::KEYS.$privateKey,
             null,
-            getenv('ESIA_CLIENT_OPENSSL_TOOL_PATH') ?: ['openssl', '-engine gost']
+            getenv('ESIA_CLIENT_OPENSSL_TOOL_PATH') ?: 'openssl',
+            '-engine gost'
         );
         $this->provider = new EsiaProvider([
             'clientId' => 'EKAP01',
