@@ -4,6 +4,7 @@ namespace Ekapusta\OAuth2Esia\Tests;
 
 use Bramus\Monolog\Formatter\ColoredLineFormatter;
 use Bramus\Monolog\Formatter\ColorSchemes\TrafficLight;
+use DateTimeImmutable;
 use Ekapusta\OAuth2Esia\Provider\EsiaProvider;
 use Ekapusta\OAuth2Esia\Security\JWTSigner\OpenSslCliJwtSigner;
 use Ekapusta\OAuth2Esia\Token\EsiaAccessToken;
@@ -67,13 +68,12 @@ class Factory
         }
 
         $accessToken = (new Builder())
-            ->setIssuedAt(time())
-            ->setNotBefore(time())
-            ->setExpiration(time() + 3600)
+            ->setIssuedAt(new DateTimeImmutable())
+            ->setNotBefore(new DateTimeImmutable())
+            ->setExpiration(new DateTimeImmutable('+1 hour'))
             ->set('urn:esia:sbj_id', 1)
             ->set('scope', 'one?oid=123 two?oid=456 three?oid=789')
-            ->sign($signer, new Key(file_get_contents($privateKeyPath)))
-            ->getToken();
+            ->getToken($signer, new Key(file_get_contents($privateKeyPath)));
 
         return new EsiaAccessToken(['access_token' => (string) $accessToken], $publicKeyPath, $signer);
     }
