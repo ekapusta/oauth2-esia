@@ -33,6 +33,7 @@ matrix:
           ESIA_REMOTE_PUBLIC_KEY=esia.gost.test.public.key
           ESIA_REMOTE_ALGORYTHM_ID=GOST3410_2012_256
           ESIA_REMOTE_SIGNER_CLASS=Ekapusta\\OAuth2Esia\\Security\\JWTSigner\\OpenSslCliJwtSigner
+          XDEBUG_MODE=coverage
 
 services:
   - docker
@@ -44,7 +45,6 @@ branches:
 
 install:
   - docker pull rnix/openssl-gost
-  - ln --symbolic composer.lock.dist composer.lock
   - composer install
   - (cd tests/AuthenticationBot && npm install --no-progress)
 
