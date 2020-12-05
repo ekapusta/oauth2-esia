@@ -45,7 +45,6 @@ branches:
 
 install:
   - docker pull rnix/openssl-gost
-  - ln --symbolic composer.lock.dist composer.lock
   - composer install
   - (cd tests/AuthenticationBot && npm install --no-progress)
 

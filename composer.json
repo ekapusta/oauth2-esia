@@ -20,7 +20,7 @@
     "lcobucci/jwt": "^3.2.2",
     "league/oauth2-client": "^2.4.1",
     "psr/log": "^1.0",
-    "ramsey/uuid": "^3.0"
+    "ramsey/uuid": "^3.0 || ^4.0"
   },
   "require-dev": {
     "bramus/monolog-colored-line-formatter": "^2.0",
@@ -39,9 +39,6 @@
     }
   },
   "config": {
-    "platform": {
-      "php": "5.6"
-    },
     "discard-changes": true,
     "sort-packages": true
   },
