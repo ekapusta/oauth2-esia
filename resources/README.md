@@ -26,7 +26,7 @@ Update ESIA`a public keys
 -------------------------
 
 ```
-wget http://esia.gosuslugi.ru/public/esia.zip
+wget --no-check-certificate https://esia.gosuslugi.ru/public/esia.zip
 unzip esia.zip
 mv RSA_PROD.cer esia.prod.cer
 mv RSA_TESIA.cer esia.test.cer
@@ -34,5 +34,5 @@ openssl x509 -inform der -in "ГОСТ 2012 ПРОД.cer" -out esia.gost.prod.ce
 openssl x509 -inform der -in "ГОСТ ТЕСИА 2012.cer" -out esia.gost.test.cer
 openssl x509 -engine gost -noout -pubkey -in esia.gost.prod.cer -out esia.gost.prod.public.key
 openssl x509 -engine gost -noout -pubkey -in esia.gost.test.cer -out esia.gost.test.public.key
-rm -f esia.zip RSA.txt ГОСТ*.cer
+rm -f esia.zip RSA.txt ГОСТ*.cer *.crt
 ```
