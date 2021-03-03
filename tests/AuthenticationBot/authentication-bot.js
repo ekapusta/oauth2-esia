@@ -24,7 +24,7 @@ const puppeteer = require('puppeteer');
     }
 
     await page.waitForNavigation(waitOptions);
-    await page.type('#mobileOrEmail', options.mobileOrEmail);
+    await page.type('#login', options.mobileOrEmail);
     await page.type('#password', options.password);
 
     await page.setRequestInterception(true);
