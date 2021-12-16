@@ -1,7 +1,6 @@
 ESIA Provider for OAuth 2.0 Client
 ==================================
 
-[![Build Status](https://travis-ci.org/ekapusta/oauth2-esia.svg?branch=develop)](https://travis-ci.org/ekapusta/oauth2-esia)
 [![Coverage Status](https://coveralls.io/repos/github/ekapusta/oauth2-esia/badge.svg?branch=develop)](https://coveralls.io/github/ekapusta/oauth2-esia?branch=develop)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://github.com/ekapusta/oauth2-esia/blob/develop/LICENSE.md)
 <a href="https://esia.gosuslugi.ru/"><img src="https://esia.gosuslugi.ru/idp/resources/img/flt/ru/logo-simple.png" height="16" /></a>
