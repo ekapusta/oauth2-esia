@@ -29,35 +29,27 @@ abstract class SignerTest extends TestCase
         return $signature;
     }
 
-    /**
-     * @expectedException \Ekapusta\OAuth2Esia\Security\Signer\Exception\SignException
-     */
     public function testBadCertificate()
     {
+        $this->expectException(\Ekapusta\OAuth2Esia\Security\Signer\Exception\SignException::class);
         $this->create('/dev/null')->sign('hello world');
     }
 
-    /**
-     * @expectedException \Ekapusta\OAuth2Esia\Security\Signer\Exception\SignException
-     */
     public function testUnexistentPrivateKey()
     {
+        $this->expectException(\Ekapusta\OAuth2Esia\Security\Signer\Exception\SignException::class);
         $this->create($this->pathToCertificate(), '/dev/null')->sign('hello world');
     }
 
-    /**
-     * @expectedException \Ekapusta\OAuth2Esia\Security\Signer\Exception\SignException
-     */
     public function testCertificateInsteadOfPrivateKey()
     {
+        $this->expectException(\Ekapusta\OAuth2Esia\Security\Signer\Exception\SignException::class);
         $this->create($this->pathToCertificate(), $this->pathToCertificate())->sign('hello world');
     }
 
-    /**
-     * @expectedException \Ekapusta\OAuth2Esia\Security\Signer\Exception\SignException
-     */
     public function testAnotherCertificate()
     {
+        $this->expectException(\Ekapusta\OAuth2Esia\Security\Signer\Exception\SignException::class);
         $this->create($this->pathToAnotherCertificate())->sign('hello world');
     }
 }
