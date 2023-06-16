@@ -16,7 +16,7 @@
     }
   ],
   "require": {
-    "php": ">=8.1",
+    "php": "^5.6 || ^7.0 || ^8.0",
     "lcobucci/jwt": "^3.2.2",
     "league/oauth2-client": "^2.4.1",
     "psr/log": "^1.0",
@@ -25,7 +25,7 @@
   "require-dev": {
     "bramus/monolog-colored-line-formatter": "^2.0",
     "monolog/monolog": "^1.24",
-    "phpunit/phpunit": "^10",
+    "phpunit/phpunit": "^6 || ^10",
     "satooshi/php-coveralls": "^1.0"
   },
   "autoload": {
