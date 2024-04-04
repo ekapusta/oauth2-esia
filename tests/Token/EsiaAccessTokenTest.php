@@ -9,23 +9,19 @@ use PHPUnit\Framework\TestCase;
 
 class EsiaAccessTokenTest extends TestCase
 {
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Access token is invalid
-     */
     public function testInvalidAsItExpired()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage("Access token is invalid");
         new EsiaAccessToken([
             'access_token' => file_get_contents(__DIR__.'/../Fixtures/expired.token.txt'),
         ], 'anything', new Sha256());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Access token can not be verified
-     */
     public function testInvalidAsBadSignature()
     {
+        $this->expectExceptionMessage("Access token can not be verified");
+        $this->expectException(\InvalidArgumentException::class);
         Factory::createAccessToken(
             Factory::KEYS.'ekapusta.rsa.test.key',
             Factory::KEYS.'another.rsa.test.public.key'
@@ -64,12 +60,10 @@ class EsiaAccessTokenTest extends TestCase
         $this->assertEquals(['one', 'two', 'three'], $esiaToken->getScopes());
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage unable to load
-     */
     public function testGostIsInvalid()
     {
+        $this->expectExceptionMessage("unable to load");
+        $this->expectException(\RuntimeException::class);
         Factory::createGostAccessToken(
             Factory::KEYS.'another.gost.test.key',
             '/dev/null'

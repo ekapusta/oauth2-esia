@@ -26,7 +26,7 @@ class EsiaProviderTest extends TestCase
 
     private $provider;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $formatter = new MessageFormatter(MessageFormatter::DEBUG);
         $logger = Middleware::log(Factory::createLogger('esia-http'), $formatter, LogLevel::DEBUG);
@@ -135,46 +135,38 @@ class EsiaProviderTest extends TestCase
         return $accessToken;
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Access token is invalid
-     */
     public function testAccessTokenInvalid()
     {
+        $this->expectExceptionMessage("Access token is invalid");
+        $this->expectException(\InvalidArgumentException::class);
         $collaborators = [
             'signer' => $this->signer,
         ];
-        $provider = $this->getMockBuilder(EsiaProvider::class)->setConstructorArgs([[], $collaborators])->setMethods(['getResponse'])->getMock();
+        $provider = $this->getMockBuilder(EsiaProvider::class)->setConstructorArgs([[], $collaborators])->onlyMethods(['getResponse'])->getMock();
         $response = new Response(200, [], '{"access_token": "'.file_get_contents(__DIR__.'/../Fixtures/expired.token.txt').'"}');
         $provider->expects($this->once())->method('getResponse')->willReturn($response);
 
         $provider->getAccessToken('authorization_code', ['code' => 'some code']);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Signer is not provided!
-     */
     public function testSignerIsRequired()
     {
+        $this->expectExceptionMessage("Signer is not provided!");
+        $this->expectException(\InvalidArgumentException::class);
         new EsiaProvider();
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Remote URL is not provided!
-     */
     public function testRemoteUrlIsRequired()
     {
+        $this->expectExceptionMessage("Remote URL is not provided!");
+        $this->expectException(\InvalidArgumentException::class);
         new EsiaProvider(['remoteUrl' => ''], ['signer' => $this->signer]);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Remote public key is not provided!
-     */
     public function testRemotePublicKeyIsRequired()
     {
+        $this->expectExceptionMessage("Remote public key is not provided!");
+        $this->expectException(\InvalidArgumentException::class);
         new EsiaProvider(['remotePublicKey' => ''], ['signer' => $this->signer]);
     }
 
@@ -207,13 +199,11 @@ class EsiaProviderTest extends TestCase
         Factory::createLogger('esia-provider')->warning('Person info', $info);
     }
 
-    /**
-     * @expectedException \League\OAuth2\Client\Provider\Exception\IdentityProviderException
-     * @expectedExceptionMessage Unauthorized
-     * @expectedExceptionCode 401
-     */
     public function testPersonGeneralInfoFailsAsOfBadSignedToken()
     {
+        $this->expectExceptionCode(401);
+        $this->expectExceptionMessage("Unauthorized");
+        $this->expectException(\League\OAuth2\Client\Provider\Exception\IdentityProviderException::class);
         $accessToken = Factory::createAccessToken(
             Factory::KEYS.'ekapusta.rsa.test.key',
             Factory::KEYS.'ekapusta.rsa.test.cer'
