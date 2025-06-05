@@ -28,11 +28,9 @@ Update ESIA`a public keys
 ```
 wget --no-check-certificate https://esia.gosuslugi.ru/public/esia.zip
 unzip esia.zip
-mv RSA_PROD.cer esia.prod.cer
-mv RSA_TESIA.cer esia.test.cer
-openssl x509 -inform der -in "ГОСТ+ПРОД+24-25.cer" -out esia.gost.prod.cer
-openssl x509 -inform der -in "TESIA GOST 2012.cer" -out esia.gost.test.cer
+rm -rf esia.zip esia RSA_PROD_2025_JWK.jwk
+mv RSA_PROD_2025.cer esia.prod.cer
+openssl x509 -inform der -in "ГОСТ_PROD_25_26.cer" -out esia.gost.prod.cer
 docker run --rm -i -v $(pwd):$(pwd) -v /tmp/tmp -w $(pwd) rnix/openssl-gost openssl x509 -engine gost -noout -pubkey -in esia.gost.prod.cer -out esia.gost.prod.public.key
-docker run --rm -i -v $(pwd):$(pwd) -v /tmp/tmp -w $(pwd) rnix/openssl-gost openssl x509 -engine gost -noout -pubkey -in esia.gost.test.cer -out esia.gost.test.public.key
-rm -f esia.zip RSA.txt *GOST*.cer *ГОСТ*.cer *.crt ssl*.cer
+rm ГОСТ_PROD_25_26.cer
 ```
