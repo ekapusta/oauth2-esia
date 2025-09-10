@@ -1,0 +1,101 @@
+name: CI
+
+on:
+  push:
+    branches-ignore:
+      - master
+  pull_request:
+    branches-ignore:
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        include:
+          - php-version: '7.4'
+            ESIA_CLIENT_AUTH_METHOD: get
+            ESIA_CLIENT_ID: '500201'
+            ESIA_SIGNER_CLASS: 'Ekapusta\OAuth2Esia\Security\Signer\OpensslCli'
+            ESIA_CERTIFICATE: ekapusta.gost2012.test.cer
+            ESIA_PRIVATE_KEY: ekapusta.gost2012.test.key
+            ESIA_REMOTE_PUBLIC_KEY: esia.gost.test.public.key
+            ESIA_REMOTE_ALGORYTHM_ID: GOST3410_2012_256
+            ESIA_REMOTE_SIGNER_CLASS: 'Ekapusta\OAuth2Esia\Security\JWTSigner\OpenSslCliJwtSigner'
+#          - php-version: '8.0'
+#            ESIA_CLIENT_AUTH_METHOD: get
+#            ESIA_CLIENT_ID: '500201'
+#            ESIA_SIGNER_CLASS: 'Ekapusta\OAuth2Esia\Security\Signer\OpensslCli'
+#            ESIA_CERTIFICATE: ekapusta.gost2012.test.cer
+#            ESIA_PRIVATE_KEY: ekapusta.gost2012.test.key
+#            ESIA_REMOTE_PUBLIC_KEY: esia.gost.test.public.key
+#            ESIA_REMOTE_ALGORYTHM_ID: GOST3410_2012_256
+#            ESIA_REMOTE_SIGNER_CLASS: 'Ekapusta\OAuth2Esia\Security\JWTSigner\OpenSslCliJwtSigner'
+
+    env:
+      ESIA_CLIENT_AUTH_METHOD: ${{ matrix.ESIA_CLIENT_AUTH_METHOD }}
+      ESIA_CLIENT_ID: ${{ matrix.ESIA_CLIENT_ID }}
+      ESIA_SIGNER_CLASS: ${{ matrix.ESIA_SIGNER_CLASS }}
+      ESIA_CERTIFICATE: ${{ matrix.ESIA_CERTIFICATE }}
+      ESIA_PRIVATE_KEY: ${{ matrix.ESIA_PRIVATE_KEY }}
+      ESIA_REMOTE_PUBLIC_KEY: ${{ matrix.ESIA_REMOTE_PUBLIC_KEY }}
+      ESIA_REMOTE_ALGORYTHM_ID: ${{ matrix.ESIA_REMOTE_ALGORYTHM_ID }}
+      ESIA_REMOTE_SIGNER_CLASS: ${{ matrix.ESIA_REMOTE_SIGNER_CLASS }}
+      XDEBUG_MODE: ${{ matrix.XDEBUG_MODE }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: openssl, json
+          coverage: xdebug
+          tools: composer
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: composer-${{ runner.os }}-${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            composer-${{ runner.os }}-${{ matrix.php-version }}-
+            composer-${{ runner.os }}-
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: tests/AuthenticationBot/package.json
+
+      - name: Cache Node.js dependencies
+        uses: actions/cache@v3
+        with:
+          path: tests/AuthenticationBot/node_modules
+          key: node-${{ runner.os }}-${{ hashFiles('tests/AuthenticationBot/package.json') }}
+          restore-keys: |
+            node-${{ runner.os }}-
+
+      - name: Pull OpenSSL GOST Docker image
+        run: docker pull rnix/openssl-gost
+
+      - name: Install Composer dependencies
+        run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
+
+      - name: Install Node.js dependencies
+        run: cd tests/AuthenticationBot && npm install --no-progress
+
+      - name: Set additional environment variables
+        run: |
+          echo "ESIA_CLIENT_OPENSSL_TOOL_PATH=docker run --rm -i -v $(pwd):$(pwd) -v /tmp:/tmp -w $(pwd) rnix/openssl-gost openssl" >> $GITHUB_ENV
+          echo "ESIA_LOGIN_ATTEMPTS=3" >> $GITHUB_ENV
+          cat $GITHUB_ENV
+
+      - name: Run tests
+        run: vendor/bin/phpunit --debug --coverage-clover=.coverage.xml
+
