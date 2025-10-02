@@ -7,7 +7,8 @@ use Ekapusta\OAuth2Esia\Interfaces\Security\SignerInterface;
 use Ekapusta\OAuth2Esia\Interfaces\Token\ScopedTokenInterface;
 use Ekapusta\OAuth2Esia\Token\EsiaAccessToken;
 use InvalidArgumentException;
-use Lcobucci\JWT\Parsing\Encoder;
+use Lcobucci\JWT\Encoder;
+use Lcobucci\JWT\Encoding\JoseEncoder;
 use Lcobucci\JWT\Signer;
 use Lcobucci\JWT\Signer\Rsa\Sha256;
 use League\OAuth2\Client\Grant\AbstractGrant;
@@ -63,11 +64,11 @@ class EsiaProvider extends AbstractProvider implements ProviderInterface
 
         if (isset($collaborators['signer']) && $collaborators['signer'] instanceof SignerInterface) {
             $this->signer = $collaborators['signer'];
-            $this->encoder = new Encoder();
         } else {
             throw new InvalidArgumentException('Signer is not provided!');
         }
 
+        $this->encoder = new JoseEncoder();
         $this->remoteSigner = new Sha256();
         if (isset($collaborators['remoteSigner']) && $collaborators['remoteSigner'] instanceof Signer) {
             $this->remoteSigner = $collaborators['remoteSigner'];

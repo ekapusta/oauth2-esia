@@ -2,7 +2,7 @@
 
 namespace Ekapusta\OAuth2Esia\Tests\Security\Signer;
 
-use Ekapusta\OAuth2Esia\Security\Signer\OpensslPkcs7;
+use Ekapusta\OAuth2Esia\Security\JWTSigner\Signer\OpensslPkcs7;
 use Ekapusta\OAuth2Esia\Tests\Factory;
 use Ekapusta\OAuth2Esia\Tests\Security\SignerTest;
 

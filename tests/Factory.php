@@ -8,7 +8,10 @@ use DateTimeImmutable;
 use Ekapusta\OAuth2Esia\Provider\EsiaProvider;
 use Ekapusta\OAuth2Esia\Security\JWTSigner\OpenSslCliJwtSigner;
 use Ekapusta\OAuth2Esia\Token\EsiaAccessToken;
-use Lcobucci\JWT\Builder;
+use Lcobucci\JWT\Encoding\ChainedFormatter;
+use Lcobucci\JWT\Encoding\JoseEncoder;
+use Lcobucci\JWT\Signer\Key\InMemory;
+use Lcobucci\JWT\Token\Builder;
 use Lcobucci\JWT\Signer;
 use Lcobucci\JWT\Signer\Key;
 use Lcobucci\JWT\Signer\Rsa\Sha256;
@@ -63,19 +66,19 @@ class Factory
      */
     public static function createAccessToken($privateKeyPath, $publicKeyPath, Signer $signer = null)
     {
-        if (null == $signer) {
+        if (null === $signer) {
             $signer = new Sha256();
         }
 
-        $accessToken = (new Builder())
-            ->setIssuedAt(new DateTimeImmutable())
-            ->setNotBefore(new DateTimeImmutable())
-            ->setExpiration(new DateTimeImmutable('+1 hour'))
-            ->set('urn:esia:sbj_id', 1)
-            ->set('scope', 'one?oid=123 two?oid=456 three?oid=789')
-            ->getToken($signer, new Key(file_get_contents($privateKeyPath)));
+        $accessToken = (new Builder(new JoseEncoder(), ChainedFormatter::default()))
+            ->issuedAt(new DateTimeImmutable())
+            ->canOnlyBeUsedAfter(new DateTimeImmutable())
+            ->expiresAt(new DateTimeImmutable('+1 hour'))
+            ->withClaim('urn:esia:sbj_id', 1)
+            ->withClaim('scope', 'one?oid=123 two?oid=456 three?oid=789')
+            ->getToken($signer, InMemory::plainText(file_get_contents($privateKeyPath)));
 
-        return new EsiaAccessToken(['access_token' => (string) $accessToken], $publicKeyPath, $signer);
+        return new EsiaAccessToken(['access_token' => $accessToken->toString()], $publicKeyPath, $signer);
     }
 
     /**

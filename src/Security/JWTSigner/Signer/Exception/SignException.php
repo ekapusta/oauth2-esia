@@ -1,6 +1,6 @@
 <?php
 
-namespace Ekapusta\OAuth2Esia\Security\Signer\Exception;
+namespace Ekapusta\OAuth2Esia\Security\JWTSigner\Signer\Exception;
 
 /**
  * Exception thrown if the signature fails.

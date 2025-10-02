@@ -27,9 +27,7 @@ Usage is the same as the normal client, using `Ekapusta\OAuth2Esia\Provider\Esia
 ### Configure provider
 
 ```php
-use Ekapusta\OAuth2Esia\Provider\EsiaProvider;
-use Ekapusta\OAuth2Esia\Security\JWTSigner\OpenSslCliJwtSigner;
-use Ekapusta\OAuth2Esia\Security\Signer\OpensslPkcs7;
+use Ekapusta\OAuth2Esia\Provider\EsiaProvider;use Ekapusta\OAuth2Esia\Security\JWTSigner\Signer\OpensslPkcs7;
 
 $provider = new EsiaProvider([
     'clientId'      => 'XXXXXX',

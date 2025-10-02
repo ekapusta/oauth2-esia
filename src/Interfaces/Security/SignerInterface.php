@@ -7,7 +7,7 @@ interface SignerInterface
     /**
      * @param string $message
      *
-     * @throws \Ekapusta\OAuth2Esia\Security\Signer\Exception\SignException
+     * @throws \Ekapusta\OAuth2Esia\Security\JWTSigner\Signer\Exception\SignException
      *
      * @return string
      */

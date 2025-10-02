@@ -3,10 +3,10 @@
 namespace Ekapusta\OAuth2Esia\Security\JWTSigner;
 
 use Ekapusta\OAuth2Esia\Transport\Process;
-use Lcobucci\JWT\Signer\BaseSigner;
+use Lcobucci\JWT\Signer;
 use Lcobucci\JWT\Signer\Key;
 
-final class OpenSslCliJwtSigner extends BaseSigner
+final class OpenSslCliJwtSigner implements Signer
 {
     private $toolPath;
     private $algorythmId;
@@ -17,19 +17,30 @@ final class OpenSslCliJwtSigner extends BaseSigner
         $this->toolPath = $toolPath;
         $this->algorythmId = $algorythmId;
 
-        if (false !== stristr($this->getAlgorithmId(), 'gost')) {
+        if (stripos($this->algorithmId(), 'gost') !== false) {
             $this->postParams = '-engine gost';
         }
     }
-
-    public function getAlgorithmId()
+    public function algorithmId(): string
     {
         return $this->algorythmId;
     }
 
-    public function doVerify($expected, $payload, Key $key)
+    public function sign(string $payload, Key $key): string
     {
-        $verify = new TmpFile($key->getContent());
+        $sign = new TmpFile($key->contents());
+
+        return (string) Process::fromArray([
+            $this->toolPath,
+            'dgst',
+            '-sign '.escapeshellarg($sign),
+            $this->postParams,
+        ], $payload);
+    }
+
+    public function verify(string $expected, string $payload, Key $key): bool
+    {
+        $verify = new TmpFile($key->contents());
         $signature = new TmpFile($expected);
 
         Process::fromArray([
@@ -41,17 +52,5 @@ final class OpenSslCliJwtSigner extends BaseSigner
         ], $payload);
 
         return true;
-    }
-
-    public function createHash($payload, Key $key)
-    {
-        $sign = new TmpFile($key->getContent());
-
-        return (string) Process::fromArray([
-            $this->toolPath,
-            'dgst',
-            '-sign '.escapeshellarg($sign),
-            $this->postParams,
-        ], $payload);
     }
 }

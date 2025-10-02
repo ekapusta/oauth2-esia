@@ -1,9 +1,9 @@
 <?php
 
-namespace Ekapusta\OAuth2Esia\Security\Signer;
+namespace Ekapusta\OAuth2Esia\Security\JWTSigner\Signer;
 
+use Ekapusta\OAuth2Esia\Security\JWTSigner\Signer\Exception\SignException;
 use Ekapusta\OAuth2Esia\Security\Signer;
-use Ekapusta\OAuth2Esia\Security\Signer\Exception\SignException;
 
 class OpensslPkcs7 extends Signer
 {

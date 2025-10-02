@@ -30,7 +30,7 @@ abstract class SignerTest extends TestCase
     }
 
     /**
-     * @expectedException \Ekapusta\OAuth2Esia\Security\Signer\Exception\SignException
+     * @expectedException \Ekapusta\OAuth2Esia\Security\JWTSigner\Signer\Exception\SignException
      */
     public function testBadCertificate()
     {
@@ -38,7 +38,7 @@ abstract class SignerTest extends TestCase
     }
 
     /**
-     * @expectedException \Ekapusta\OAuth2Esia\Security\Signer\Exception\SignException
+     * @expectedException \Ekapusta\OAuth2Esia\Security\JWTSigner\Signer\Exception\SignException
      */
     public function testUnexistentPrivateKey()
     {
@@ -46,7 +46,7 @@ abstract class SignerTest extends TestCase
     }
 
     /**
-     * @expectedException \Ekapusta\OAuth2Esia\Security\Signer\Exception\SignException
+     * @expectedException \Ekapusta\OAuth2Esia\Security\JWTSigner\Signer\Exception\SignException
      */
     public function testCertificateInsteadOfPrivateKey()
     {
@@ -54,7 +54,7 @@ abstract class SignerTest extends TestCase
     }
 
     /**
-     * @expectedException \Ekapusta\OAuth2Esia\Security\Signer\Exception\SignException
+     * @expectedException \Ekapusta\OAuth2Esia\Security\JWTSigner\Signer\Exception\SignException
      */
     public function testAnotherCertificate()
     {

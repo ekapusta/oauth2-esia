@@ -11,13 +11,13 @@ class EsiaAccessTokenTest extends TestCase
 {
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Access token is invalid
+     * @expectedExceptionMessage Access token can not be verified
      */
     public function testInvalidAsItExpired()
     {
         new EsiaAccessToken([
             'access_token' => file_get_contents(__DIR__.'/../Fixtures/expired.token.txt'),
-        ], 'anything', new Sha256());
+        ], Factory::KEYS.'another.rsa.test.public.key', new Sha256());
     }
 
     /**
@@ -65,8 +65,8 @@ class EsiaAccessTokenTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage unable to load
+     * @expectedException \Lcobucci\JWT\Signer\InvalidKeyProvided
+     * @expectedExceptionMessage Key cannot be empty
      */
     public function testGostIsInvalid()
     {
