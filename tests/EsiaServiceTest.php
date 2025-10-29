@@ -13,7 +13,7 @@ class EsiaServiceTest extends TestCase
     private $provider;
     private $service;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->provider = $this->getMockBuilder(EsiaProvider::class)->disableOriginalConstructor()->setMethods([
             'getRandomState',

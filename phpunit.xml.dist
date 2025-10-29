@@ -8,10 +8,9 @@
         convertNoticesToExceptions  = "true"
         convertWarningsToExceptions = "true"
         processIsolation            = "false"
-        syntaxCheck                 = "false"
 >
     <testsuites>
-        <testsuite>
+        <testsuite name="test">
             <directory suffix="Test.php">./tests</directory>
         </testsuite>
     </testsuites>

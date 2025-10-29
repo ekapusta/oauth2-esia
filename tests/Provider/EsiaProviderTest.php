@@ -26,7 +26,7 @@ class EsiaProviderTest extends TestCase
 
     private $provider;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $formatter = new MessageFormatter(MessageFormatter::DEBUG);
         $logger = Middleware::log(Factory::createLogger('esia-http'), $formatter, LogLevel::DEBUG);
