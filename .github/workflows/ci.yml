@@ -18,21 +18,30 @@ jobs:
           - php-version: '7.4'
             ESIA_CLIENT_AUTH_METHOD: get
             ESIA_CLIENT_ID: '500201'
-            ESIA_SIGNER_CLASS: 'Ekapusta\OAuth2Esia\Security\Signer\OpensslCli'
+            ESIA_SIGNER_CLASS: 'Ekapusta\OAuth2Esia\Security\JWTSigner\Signer\OpensslCli'
             ESIA_CERTIFICATE: ekapusta.gost2012.test.cer
             ESIA_PRIVATE_KEY: ekapusta.gost2012.test.key
             ESIA_REMOTE_PUBLIC_KEY: esia.gost.test.public.key
             ESIA_REMOTE_ALGORYTHM_ID: GOST3410_2012_256
             ESIA_REMOTE_SIGNER_CLASS: 'Ekapusta\OAuth2Esia\Security\JWTSigner\OpenSslCliJwtSigner'
-#          - php-version: '8.0'
-#            ESIA_CLIENT_AUTH_METHOD: get
-#            ESIA_CLIENT_ID: '500201'
-#            ESIA_SIGNER_CLASS: 'Ekapusta\OAuth2Esia\Security\Signer\OpensslCli'
-#            ESIA_CERTIFICATE: ekapusta.gost2012.test.cer
-#            ESIA_PRIVATE_KEY: ekapusta.gost2012.test.key
-#            ESIA_REMOTE_PUBLIC_KEY: esia.gost.test.public.key
-#            ESIA_REMOTE_ALGORYTHM_ID: GOST3410_2012_256
-#            ESIA_REMOTE_SIGNER_CLASS: 'Ekapusta\OAuth2Esia\Security\JWTSigner\OpenSslCliJwtSigner'
+          - php-version: '8.0'
+            ESIA_CLIENT_AUTH_METHOD: get
+            ESIA_CLIENT_ID: '500201'
+            ESIA_SIGNER_CLASS: 'Ekapusta\OAuth2Esia\Security\JWTSigner\Signer\OpensslCli'
+            ESIA_CERTIFICATE: ekapusta.gost2012.test.cer
+            ESIA_PRIVATE_KEY: ekapusta.gost2012.test.key
+            ESIA_REMOTE_PUBLIC_KEY: esia.gost.test.public.key
+            ESIA_REMOTE_ALGORYTHM_ID: GOST3410_2012_256
+            ESIA_REMOTE_SIGNER_CLASS: 'Ekapusta\OAuth2Esia\Security\JWTSigner\OpenSslCliJwtSigner'
+          - php-version: '8.2'
+            ESIA_CLIENT_AUTH_METHOD: get
+            ESIA_CLIENT_ID: '500201'
+            ESIA_SIGNER_CLASS: 'kapusta\OAuth2Esia\Security\JWTSigner\Signer\OpensslCli'
+            ESIA_CERTIFICATE: ekapusta.gost2012.test.cer
+            ESIA_PRIVATE_KEY: ekapusta.gost2012.test.key
+            ESIA_REMOTE_PUBLIC_KEY: esia.gost.test.public.key
+            ESIA_REMOTE_ALGORYTHM_ID: GOST3410_2012_256
+            ESIA_REMOTE_SIGNER_CLASS: 'Ekapusta\OAuth2Esia\Security\JWTSigner\OpenSslCliJwtSigner'
 
     env:
       ESIA_CLIENT_AUTH_METHOD: ${{ matrix.ESIA_CLIENT_AUTH_METHOD }}
