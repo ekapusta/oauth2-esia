@@ -34,3 +34,5 @@ openssl x509 -inform der -in "ГОСТ_PROD_25_26.cer" -out esia.gost.prod.cer
 docker run --rm -i -v $(pwd):$(pwd) -v /tmp/tmp -w $(pwd) rnix/openssl-gost openssl x509 -engine gost -noout -pubkey -in esia.gost.prod.cer -out esia.gost.prod.public.key
 rm ГОСТ_PROD_25_26.cer
 ```
+
+https://digital.gov.ru/documents/metodicheskie-rekomendaczii-po-ispolzovaniyu-esia
