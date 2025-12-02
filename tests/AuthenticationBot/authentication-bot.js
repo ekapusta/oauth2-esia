@@ -7,11 +7,11 @@ const puppeteer = require('puppeteer');
     const options = parseOptions();
     const browser = await puppeteer.launch({
         headless : options.headless,
-        args : [ '--start-maximized', '--no-sandbox']
+        args : [ '--start-maximized', '--no-sandbox'],
+        executablePath: '/usr/bin/chromium'
     });
 
-    const pages = await browser.pages();
-    const page = pages[0];
+    const page = await browser.newPage();
     await page.setViewport({width: 1920, height: 1080});
     const waitOptions = {waitUntil: ['networkidle2', 'domcontentloaded', 'load']};
 
@@ -53,7 +53,7 @@ const puppeteer = require('puppeteer');
 
     await Promise.all([
         page.waitForNavigation(waitOptions),
-        page.click('button[data-bind="click: loginByPwd"]'),
+        page.click('button.plain-button_wide'),
     ]);
 
     const grantAuthorization = await page.$('#grantAuthorization');

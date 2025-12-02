@@ -3,6 +3,7 @@
 !/.gitignore
 !/.php_cs.dist
 !/.travis.yml
+!/.github
 /composer.lock
 /composer.phar
 /tests/AuthenticationBot/node_modules

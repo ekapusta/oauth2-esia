@@ -9,23 +9,21 @@ use PHPUnit\Framework\TestCase;
 
 class EsiaAccessTokenTest extends TestCase
 {
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Access token is invalid
-     */
     public function testInvalidAsItExpired()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Access token is invalid');
+
         new EsiaAccessToken([
             'access_token' => file_get_contents(__DIR__.'/../Fixtures/expired.token.txt'),
         ], 'anything', new Sha256());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Access token can not be verified
-     */
     public function testInvalidAsBadSignature()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Access token can not be verified');
+
         Factory::createAccessToken(
             Factory::KEYS.'ekapusta.rsa.test.key',
             Factory::KEYS.'another.rsa.test.public.key'
@@ -49,7 +47,7 @@ class EsiaAccessTokenTest extends TestCase
      */
     public function testScopesExtracted(EsiaAccessToken $token)
     {
-        $this->assertEquals(['one', 'two', 'three'], $token->getScopes());
+        $this->assertEquals(['one', 'two', 'three', 'contacts'], $token->getScopes());
     }
 
     public function testGostFullyValidAndScopesExtraced()
@@ -61,15 +59,14 @@ class EsiaAccessTokenTest extends TestCase
 
         $this->assertInstanceOf(EsiaAccessToken::class, $esiaToken);
 
-        $this->assertEquals(['one', 'two', 'three'], $esiaToken->getScopes());
+        $this->assertEquals(['one', 'two', 'three', 'contacts'], $esiaToken->getScopes());
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage unable to load
-     */
     public function testGostIsInvalid()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('unable to load');
+
         Factory::createGostAccessToken(
             Factory::KEYS.'another.gost.test.key',
             '/dev/null'
@@ -85,6 +82,6 @@ class EsiaAccessTokenTest extends TestCase
 
         $this->assertInstanceOf(EsiaAccessToken::class, $esiaToken);
 
-        $this->assertEquals(['one', 'two', 'three'], $esiaToken->getScopes());
+        $this->assertEquals(['one', 'two', 'three', 'contacts'], $esiaToken->getScopes());
     }
 }
