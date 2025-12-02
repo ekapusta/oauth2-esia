@@ -13,7 +13,7 @@ class EsiaServiceTest extends TestCase
     private $provider;
     private $service;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->provider = $this->getMockBuilder(EsiaProvider::class)->disableOriginalConstructor()->setMethods([
             'getRandomState',
@@ -39,12 +39,11 @@ class EsiaServiceTest extends TestCase
         $this->assertEquals('url', $this->service->getAuthorizationUrl('state'));
     }
 
-    /**
-     * @expectedException \UnexpectedValueException
-     * @expectedExceptionMessage Generated and passed states must be same: 1 != 2
-     */
     public function testGetResourceOwnerFails()
     {
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionMessage('Generated and passed states must be same: 1 != 2');
+
         $this->service->getResourceOwner('1', '2', '3');
     }
 

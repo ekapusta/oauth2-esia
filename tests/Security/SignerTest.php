@@ -3,6 +3,7 @@
 namespace Ekapusta\OAuth2Esia\Tests\Security;
 
 use Ekapusta\OAuth2Esia\Interfaces\Security\SignerInterface;
+use Ekapusta\OAuth2Esia\Security\Signer\Exception\SignException;
 use PHPUnit\Framework\TestCase;
 
 abstract class SignerTest extends TestCase
@@ -29,35 +30,31 @@ abstract class SignerTest extends TestCase
         return $signature;
     }
 
-    /**
-     * @expectedException \Ekapusta\OAuth2Esia\Security\Signer\Exception\SignException
-     */
     public function testBadCertificate()
     {
+        $this->expectException(SignException::class);
+
         $this->create('/dev/null')->sign('hello world');
     }
 
-    /**
-     * @expectedException \Ekapusta\OAuth2Esia\Security\Signer\Exception\SignException
-     */
     public function testUnexistentPrivateKey()
     {
+        $this->expectException(SignException::class);
+
         $this->create($this->pathToCertificate(), '/dev/null')->sign('hello world');
     }
 
-    /**
-     * @expectedException \Ekapusta\OAuth2Esia\Security\Signer\Exception\SignException
-     */
     public function testCertificateInsteadOfPrivateKey()
     {
+        $this->expectException(SignException::class);
+
         $this->create($this->pathToCertificate(), $this->pathToCertificate())->sign('hello world');
     }
 
-    /**
-     * @expectedException \Ekapusta\OAuth2Esia\Security\Signer\Exception\SignException
-     */
     public function testAnotherCertificate()
     {
+        $this->expectException(SignException::class);
+
         $this->create($this->pathToAnotherCertificate())->sign('hello world');
     }
 }

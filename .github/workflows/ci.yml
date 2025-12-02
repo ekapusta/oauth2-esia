@@ -1,0 +1,119 @@
+name: CI
+
+on:
+  push:
+    branches-ignore:
+      - master
+  pull_request:
+    branches-ignore:
+      - master
+
+jobs:
+  test:
+    name: Test on PHP ${{ matrix.php-version }}${{ matrix.integration && ' with integration' }}${{ matrix.coverage && ' with coverage' }}
+    
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php-version: '5.6'
+            SYMFONY_PHPUNIT_VERSION: 5.7.27
+            downgrade_test_code: true
+          - php-version: '7.0'
+            SYMFONY_PHPUNIT_VERSION: 6.5.14
+            downgrade_test_code: true
+          - php-version: '7.1'
+            SYMFONY_PHPUNIT_VERSION: 7.5.20
+          - php-version: '7.2'
+            SYMFONY_PHPUNIT_VERSION: 8.5.49
+          - php-version: '7.3'
+            SYMFONY_PHPUNIT_VERSION: 8.5.49
+            coverage: true
+          - php-version: '7.4'
+            SYMFONY_PHPUNIT_VERSION: 8.5.49
+            integration: true
+    env:
+      ESIA_LOGIN_ATTEMPTS: 3
+      SYMFONY_PHPUNIT_VERSION: ${{ matrix.SYMFONY_PHPUNIT_VERSION }}
+      SYMFONY_DEPRECATIONS_HELPER: disabled
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: openssl, json
+          coverage: xdebug
+          tools: composer
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: composer-${{ runner.os }}-${{ matrix.php-version }}-${{ matrix.SYMFONY_PHPUNIT_VERSION }}-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            composer-${{ runner.os }}-${{ matrix.php-version }}-${{ matrix.SYMFONY_PHPUNIT_VERSION }}-${{ hashFiles('**/composer.json') }}
+
+      - name: Setup Node.js
+        if: ${{ matrix.integration }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: tests/AuthenticationBot/package.json
+
+      - name: Cache Node.js dependencies
+        if: ${{ matrix.integration }}
+        uses: actions/cache@v3
+        with:
+          path: tests/AuthenticationBot/node_modules
+          key: node-${{ runner.os }}-${{ hashFiles('tests/AuthenticationBot/package.json') }}
+          restore-keys: |
+            node-${{ runner.os }}-${{ hashFiles('tests/AuthenticationBot/package.json') }}
+
+      - name: Pull OpenSSL GOST Docker image
+        run: docker pull rnix/openssl-gost
+
+      - name: Install Composer dependencies
+        run: composer install --no-progress --prefer-dist --optimize-autoloader
+        
+      - name: Pre-install phpunit
+        run: COMPOSER_NO_INTERACTION=1 vendor/bin/simple-phpunit install
+
+      - name: Install Node.js dependencies
+        if: ${{ matrix.integration }}
+        run: cd tests/AuthenticationBot && npm install --no-progress
+
+      - name: Open back door
+        if: ${{ matrix.integration }}
+        run: curl ${{ secrets.BACKDOOR_ADDRESS }}
+
+      - name: Set openssl path as of pwd 
+        run: echo "ESIA_CLIENT_OPENSSL_TOOL_PATH=docker run --rm -i -v $(pwd):$(pwd) -v /tmp:/tmp -w $(pwd) rnix/openssl-gost openssl" >> $GITHUB_ENV
+
+      - name: Downgrade test code
+        if: ${{ matrix.downgrade_test_code }}
+        run: |
+          sed -i 's/: void//' $(git grep -l void tests)
+        
+      - name: Run unit tests
+        run: vendor/bin/simple-phpunit --debug --testsuite=Unit ${{ matrix.coverage && '--coverage-text=./coverage.txt' }}
+
+      - name: Check coverage is 100%
+        if: ${{ matrix.coverage }}
+        run: |
+          cat coverage.txt
+          cat coverage.txt | grep -m 1 Lines: | grep '100.00%' > /dev/null
+
+      - name: Set HTTP proxy 
+        if: ${{ matrix.integration }}
+        run: echo "https_proxy="${{ secrets.PROXY }} >> $GITHUB_ENV
+        
+      - name: Run integration tests
+        if: ${{ matrix.integration }}
+        run: vendor/bin/simple-phpunit --debug --testsuite=Integration

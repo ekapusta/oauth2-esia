@@ -48,7 +48,7 @@ class Factory
     public static function createAuthenticationBot()
     {
         $bot = new AuthenticationBot(
-            'EsiaTest006@yandex.ru',
+            'EsiaTest015@yandex.ru',
             '11111111',
             !getenv('DISPLAY'),
             'post' == getenv('ESIA_CLIENT_AUTH_METHOD')
@@ -72,7 +72,7 @@ class Factory
             ->setNotBefore(new DateTimeImmutable())
             ->setExpiration(new DateTimeImmutable('+1 hour'))
             ->set('urn:esia:sbj_id', 1)
-            ->set('scope', 'one?oid=123 two?oid=456 three?oid=789')
+            ->set('scope', 'one?oid=123 two?oid=456 three?oid=789 contacts?oid=999')
             ->getToken($signer, new Key(file_get_contents($privateKeyPath)));
 
         return new EsiaAccessToken(['access_token' => (string) $accessToken], $publicKeyPath, $signer);
