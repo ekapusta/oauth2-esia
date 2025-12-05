@@ -31,9 +31,21 @@ jobs:
             SYMFONY_PHPUNIT_VERSION: 8.5.49
           - php-version: '7.3'
             SYMFONY_PHPUNIT_VERSION: 8.5.49
-            coverage: true
           - php-version: '7.4'
             SYMFONY_PHPUNIT_VERSION: 8.5.49
+          - php-version: '8.0'
+            SYMFONY_PHPUNIT_VERSION: 9.6.31
+          - php-version: '8.1'
+            SYMFONY_PHPUNIT_VERSION: 9.6.31
+          - php-version: '8.2'
+            SYMFONY_PHPUNIT_VERSION: 9.6.31
+          - php-version: '8.3'
+            SYMFONY_PHPUNIT_VERSION: 9.6.31
+          - php-version: '8.4'
+            SYMFONY_PHPUNIT_VERSION: 9.6.31
+            coverage: true
+          - php-version: '8.5'
+            SYMFONY_PHPUNIT_VERSION: 9.6.31
             integration: true
     env:
       ESIA_LOGIN_ATTEMPTS: 3
