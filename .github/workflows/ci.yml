@@ -10,7 +10,7 @@ on:
 
 jobs:
   test:
-    name: Test on PHP ${{ matrix.php-version }}${{ matrix.integration && ' with integration' }}${{ matrix.coverage && ' with coverage' }}
+    name: Test on PHP ${{ matrix.php-version }}${{ matrix.integration && ' with integration' }}${{ matrix.coverage && ' with coverage' }}${{ matrix.prefer_lowest && ' with lowest deps' }}
     
     runs-on: ubuntu-latest
 
@@ -26,6 +26,7 @@ jobs:
             downgrade_test_code: true
           - php-version: '7.1'
             SYMFONY_PHPUNIT_VERSION: 7.5.20
+            prefer_lowest: true
           - php-version: '7.2'
             SYMFONY_PHPUNIT_VERSION: 8.5.49
           - php-version: '7.3'
@@ -81,6 +82,10 @@ jobs:
 
       - name: Install Composer dependencies
         run: composer install --no-progress --prefer-dist --optimize-autoloader
+        
+      - name: Prefer lowest versions of Composer dependencies
+        run: composer update --prefer-lowest --no-progress --prefer-dist --optimize-autoloader
+        if: ${{ matrix.prefer_lowest }}
         
       - name: Pre-install phpunit
         run: COMPOSER_NO_INTERACTION=1 vendor/bin/simple-phpunit install
