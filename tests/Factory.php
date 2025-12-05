@@ -4,7 +4,6 @@ namespace Ekapusta\OAuth2Esia\Tests;
 
 use Bramus\Monolog\Formatter\ColoredLineFormatter;
 use Bramus\Monolog\Formatter\ColorSchemes\TrafficLight;
-use DateTimeImmutable;
 use Ekapusta\OAuth2Esia\Provider\EsiaProvider;
 use Ekapusta\OAuth2Esia\Security\JWTSigner\OpenSslCliJwtSigner;
 use Ekapusta\OAuth2Esia\Token\EsiaAccessToken;
@@ -67,13 +66,30 @@ class Factory
             $signer = new Sha256();
         }
 
-        $accessToken = (new Builder())
-            ->setIssuedAt(new DateTimeImmutable())
-            ->setNotBefore(new DateTimeImmutable())
-            ->setExpiration(new DateTimeImmutable('+1 hour'))
-            ->set('urn:esia:sbj_id', 1)
-            ->set('scope', 'one?oid=123 two?oid=456 three?oid=789 contacts?oid=999')
-            ->getToken($signer, new Key(file_get_contents($privateKeyPath)));
+        $builder = new Builder();
+        $isFresh = method_exists($builder, 'issuedAt');
+        $key = new Key(file_get_contents($privateKeyPath));
+
+        if ($isFresh) {
+            $now = new \DateTimeImmutable();
+            $hourLater = new \DateTimeImmutable('+1 hour');
+            $builder->issuedAt($now);
+            $builder->canOnlyBeUsedAfter($now);
+            $builder->expiresAt($hourLater);
+            $builder->withClaim('urn:esia:sbj_id', 1);
+            $builder->withClaim('scope', 'one?oid=123 two?oid=456 three?oid=789 contacts?oid=999');
+        } else {
+            $now = time();
+            $hourLater = $now + 3600;
+            $builder->setIssuedAt($now);
+            $builder->setNotBefore($now);
+            $builder->setExpiration($hourLater);
+            $builder->set('urn:esia:sbj_id', 1);
+            $builder->set('scope', 'one?oid=123 two?oid=456 three?oid=789 contacts?oid=999');
+            $builder->sign($signer, $key);
+        }
+
+        $accessToken = $builder->getToken($signer, $key);
 
         return new EsiaAccessToken(['access_token' => (string) $accessToken], $publicKeyPath, $signer);
     }
