@@ -24,7 +24,7 @@ class EsiaAccessTokenTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Access token can not be verified');
 
-        Factory::createAccessToken(
+        Factory::createSha256AccessToken(
             Factory::KEYS.'ekapusta.rsa.test.key',
             Factory::KEYS.'another.rsa.test.public.key'
         );
@@ -32,7 +32,7 @@ class EsiaAccessTokenTest extends TestCase
 
     public function testFullyValid()
     {
-        $esiaToken = Factory::createAccessToken(
+        $esiaToken = Factory::createSha256AccessToken(
             Factory::KEYS.'ekapusta.rsa.test.key',
             Factory::KEYS.'ekapusta.rsa.test.public.key'
         );

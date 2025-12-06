@@ -60,12 +60,8 @@ class Factory
     /**
      * @return EsiaAccessToken
      */
-    public static function createAccessToken($privateKeyPath, $publicKeyPath, Signer $signer = null)
+    public static function createAccessToken($privateKeyPath, $publicKeyPath, Signer $signer)
     {
-        if (null == $signer) {
-            $signer = new Sha256();
-        }
-
         $builder = new Builder();
         $isFresh = method_exists($builder, 'issuedAt');
         $key = new Key(file_get_contents($privateKeyPath));
@@ -92,6 +88,14 @@ class Factory
         $accessToken = $builder->getToken($signer, $key);
 
         return new EsiaAccessToken(['access_token' => (string) $accessToken], $publicKeyPath, $signer);
+    }
+
+    /**
+     * @return EsiaAccessToken
+     */
+    public static function createSha256AccessToken($privateKeyPath, $publicKeyPath)
+    {
+        return self::createAccessToken($privateKeyPath, $publicKeyPath, new Sha256());
     }
 
     /**

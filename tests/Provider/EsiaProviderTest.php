@@ -72,7 +72,7 @@ class EsiaProviderTest extends EsiaProviderUnitTest
         $this->expectExceptionMessage('Unauthorized');
         $this->expectExceptionCode(401);
 
-        $accessToken = Factory::createAccessToken(
+        $accessToken = Factory::createSha256AccessToken(
             Factory::KEYS.'ekapusta.rsa.test.key',
             Factory::KEYS.'ekapusta.rsa.test.cer'
         );

@@ -75,7 +75,7 @@ class EsiaProviderUnitTest extends TestCase
 
     public function testResourceOwnerDetailsUrl()
     {
-        $esiaToken = Factory::createAccessToken(
+        $esiaToken = Factory::createSha256AccessToken(
             Factory::KEYS.'ekapusta.rsa.test.key',
             Factory::KEYS.'ekapusta.rsa.test.public.key'
         );
@@ -115,7 +115,7 @@ class EsiaProviderUnitTest extends TestCase
         $response = new Response(200, [], '{"stateFacts":["EntityRoot"],"firstName":"Сергейъ","lastName":"Ивановъ","middleName":"Александровичъ","trusted":true,"citizenship":"RUS","snils":"000-000-600 15","inn":"376864406601","updatedOn":1764854668,"documents":{"stateFacts":["hasSize"],"size":1,"eTag":"8D6F0DCE1B03CA1EC0437278F7908513C195619B","elements":[{"stateFacts":["EntityRoot"],"id":2081561,"type":"RF_PASSPORT","vrfStu":"VERIFIED","series":"7899","number":"654323","issueDate":"03.12.2025","issueId":"198001","issuedBy":"НЕ МЕНЯТЬ ДАННЫЕ 04.12.2025 г., ПОЛЬЗОВАТЕЛЬ ИСПОЛЬЗУЕТСЯ ДЛЯ ДЕМОНСТРАЦИИ","eTag":"4E1D4C4522E6DE952D5713FD86E22B97E2E03498"}]},"rfgUOperatorCheck":false,"status":"REGISTERED","verifying":false,"rIdDoc":2081561,"containsUpCfmCode":false,"kidAccCreatedByParent":false,"eTag":"8300117EDF6FBE726FB5F4AEAD1E8FA72BE81D6C"}');
         $provider->expects($this->once())->method('getResponse')->willReturn($response);
 
-        $esiaToken = Factory::createAccessToken(
+        $esiaToken = Factory::createSha256AccessToken(
             Factory::KEYS.'ekapusta.rsa.test.key',
             Factory::KEYS.'ekapusta.rsa.test.public.key'
         );
