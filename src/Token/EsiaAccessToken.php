@@ -14,7 +14,7 @@ class EsiaAccessToken extends AccessToken implements ScopedTokenInterface
 {
     private $parsedToken;
 
-    public function __construct(array $options, $publicKeyPath = null, Signer $signer = null)
+    public function __construct(array $options, $publicKeyPath, Signer $signer)
     {
         parent::__construct($options);
 
@@ -25,7 +25,7 @@ class EsiaAccessToken extends AccessToken implements ScopedTokenInterface
             throw new InvalidArgumentException('Access token is invalid: '.var_export($options, true));
         }
 
-        if ($publicKeyPath && !$this->parsedToken->verify($signer, new Key(file_get_contents($publicKeyPath)))) {
+        if (!$this->parsedToken->verify($signer, new Key(file_get_contents($publicKeyPath)))) {
             throw new InvalidArgumentException('Access token can not be verified: '.var_export($options, true));
         }
     }

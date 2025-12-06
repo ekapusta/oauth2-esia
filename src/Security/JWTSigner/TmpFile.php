@@ -4,6 +4,7 @@ namespace Ekapusta\OAuth2Esia\Security\JWTSigner;
 
 final class TmpFile
 {
+    private $handle;
     private $path;
 
     public function __construct($content)

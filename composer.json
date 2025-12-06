@@ -18,7 +18,7 @@
   "require": {
     "php": "^5.6 || ^7.0",
     "lcobucci/jwt": "^3.2.2",
-    "league/oauth2-client": "^2.4.1",
+    "league/oauth2-client": "^2.7.0",
     "psr/log": "^1.0",
     "ramsey/uuid": "^3.0 || ^4.0"
   },

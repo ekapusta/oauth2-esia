@@ -61,7 +61,7 @@ class EsiaProviderTest extends EsiaProviderUnitTest
         $this->assertIsArray($info);
         $this->assertArrayHasKey('firstName', $info);
 
-        $this->assertRegExp('/^[А-Я][а-я0-9]+$/u', $info['firstName']);
+        $this->assertMatchesRegularExpression('/^[А-Я][а-я0-9]+$/u', $info['firstName']);
 
         Factory::createLogger('esia-provider')->warning('Person info', $info);
     }
@@ -72,7 +72,7 @@ class EsiaProviderTest extends EsiaProviderUnitTest
         $this->expectExceptionMessage('Unauthorized');
         $this->expectExceptionCode(401);
 
-        $accessToken = Factory::createAccessToken(
+        $accessToken = Factory::createSha256AccessToken(
             Factory::KEYS.'ekapusta.rsa.test.key',
             Factory::KEYS.'ekapusta.rsa.test.cer'
         );
