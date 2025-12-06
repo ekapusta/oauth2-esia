@@ -61,7 +61,7 @@ class EsiaProviderTest extends EsiaProviderUnitTest
         $this->assertIsArray($info);
         $this->assertArrayHasKey('firstName', $info);
 
-        $this->assertRegExp('/^[А-Я][а-я0-9]+$/u', $info['firstName']);
+        $this->assertMatchesRegularExpression('/^[А-Я][а-я0-9]+$/u', $info['firstName']);
 
         Factory::createLogger('esia-provider')->warning('Person info', $info);
     }

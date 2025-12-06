@@ -128,7 +128,7 @@ class EsiaProviderUnitTest extends TestCase
         $this->assertIsArray($info);
         $this->assertArrayHasKey('firstName', $info);
 
-        $this->assertRegExp('/^[А-Я][а-я0-9]+$/u', $info['firstName']);
+        $this->assertMatchesRegularExpression('/^[А-Я][а-я0-9]+$/u', $info['firstName']);
     }
 
     public function testSignerIsRequired()
