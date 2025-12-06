@@ -68,9 +68,10 @@ class EsiaProvider extends AbstractProvider implements ProviderInterface
             throw new InvalidArgumentException('Signer is not provided!');
         }
 
-        $this->remoteSigner = new Sha256();
         if (isset($collaborators['remoteSigner']) && $collaborators['remoteSigner'] instanceof Signer) {
             $this->remoteSigner = $collaborators['remoteSigner'];
+        } else {
+            throw new InvalidArgumentException('Remote signer is not provided!');
         }
     }
 
