@@ -50,7 +50,7 @@ class EsiaProviderTest extends EsiaProviderUnitTest
     /**
      * @depends testAccessTokenRequested
      */
-    public function testPersonGeneralInfoRequested(EsiaAccessToken $accessToken)
+    public function testPersonGeneralInfoRequestedFromToken(EsiaAccessToken $accessToken)
     {
         $resourceOwner = $this->provider->getResourceOwner($accessToken);
 
