@@ -1,30 +1,26 @@
-ESIA Provider for OAuth 2.0 Client
-==================================
+ЕСИА провайдер для OAuth 2.0 Client
+===================================
 
-[![Coverage Status](https://coveralls.io/repos/github/ekapusta/oauth2-esia/badge.svg?branch=develop)](https://coveralls.io/github/ekapusta/oauth2-esia?branch=develop)
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://github.com/ekapusta/oauth2-esia/blob/develop/LICENSE.md)
-<a href="https://esia.gosuslugi.ru/"><img src="https://esia.gosuslugi.ru/idp/resources/img/flt/ru/logo-simple.png" height="16" /></a>
+Позволяет аутентифицироваться в ЕСИА и получать персональную информацию аутентифицированного лица.
 
+Сделано как адаптер к PHP League [OAuth 2.0 Client](https://github.com/thephpleague/oauth2-client).
 
-Allows to authenticate in ESIA and get authenticated individual personal information.
+Поддерживаются версии PHP от 5.6 до 8.5.
 
-Implemented as adapter to the PHP League's [OAuth 2.0 Client](https://github.com/thephpleague/oauth2-client).
+Покрытие кода юнит-тестами: 100%.
 
-
-Installing
-----------
-
-To install, use composer:
+Установка
+---------
 
     composer require ekapusta/oauth2-esia
 
-Usage
------
+Использование
+-------------
 
-Usage is the same as the normal client, using `Ekapusta\OAuth2Esia\Provider\EsiaProvider` as the provider:
+Использование аналогично обычному OAuth 2.0 Client с провайдером `Ekapusta\OAuth2Esia\Provider\EsiaProvider`:
 
 
-### Configure provider
+### Конфигурация провайдера
 
 ```php
 use Ekapusta\OAuth2Esia\Provider\EsiaProvider;
@@ -35,35 +31,35 @@ $provider = new EsiaProvider([
     'clientId'      => 'XXXXXX',
     'redirectUri'   => 'https://your-system.domain/auth/finish/',
     'defaultScopes' => ['openid', 'fullname', '...'],
-// For work with test portal version
-//  'remoteUrl' => 'https://esia-portal1.test.gosuslugi.ru',
-//  'remotePublicKey' => EsiaProvider::RESOURCES.'esia.test.public.key',
-// For work with GOST3410_2012_256 signatures (instead of default RS256)
-//  'remoteCertificatePath' => EsiaProvider::RESOURCES.'esia.gost.prod.public.key',
+    // Для работы с тестовым порталом
+    // 'remoteUrl' => 'https://esia-portal1.test.gosuslugi.ru',
+    // 'remotePublicKey' => EsiaProvider::RESOURCES.'esia.test.public.key',
+    // Для работы с GOST3410_2012_256 подписями (другие уже не поддерживаются порталами Госуслуг)
+    'remoteCertificatePath' => EsiaProvider::RESOURCES.'esia.gost.prod.public.key',
 ], [
     'signer' => new OpensslPkcs7('/path/to/public/certificate.cer', '/path/to/private.key'),
-// For work with GOST3410_2012_256 signatures (instead of default RS256)
-//    'remoteSigner' => new OpenSslCliJwtSigner('/path/to/openssl'),
+    // Для работы с GOST3410_2012_256 подписями (другие уже не поддерживаются порталами Госуслуг)
+    'remoteSigner' => new OpenSslCliJwtSigner('/path/to/openssl'),
 ]);
 ```
 
-### Which signer to use?
+### Какой из подписателей (signer) использовать?
 
-* If you use RSA keys, then `OpensslPkcs7` is enough.
-* If you use GOST keys and compiled PHP with GOST ciphers, then `OpensslPkcs7` is enough.
-* If you use GOST keys and have openssl-compatible tool, then use `OpensslCli`. It has `toolpath` param.
-* If you use GOST keys and you are docker-addict, then you can use `'toolpath' => 'docker run --rm -i -v $(pwd):$(pwd) -w $(pwd) rnix/openssl-gost openssl'`.
+* RSA ключи уже не поддерживаются.
+* Если вы используете PHP с прекомпилированными в openssl GOST алгоритмами, то `OpensslPkcs7` достаточно.
+* Если у вас есть openssl-совместимая утилита, то можно использовать `OpensslCli`. У неё есть `toolpath` параметр.
+* Если у вас есть утилита, не совместимая с openssl, то можно по образцу `OpensslCli` сделать свою.
+* Для целей тестирования используется docker с параметром `'toolpath' => 'docker run --rm -i -v $(pwd):$(pwd) -w $(pwd) rnix/openssl-gost openssl'`.
 
 
-## Which remote signer to use?
+## Какой из удалённый подписывателей (remote signer) использовать?
 
-* If your system electronic signature algorythm is default RS256, then do nothing.
-Under the hood it uses Sha256 remote signer.
-* If you use GOST3410_2012_256 signature, then use `OpenSslCliJwtSigner`, passing to it path to `openssl` tool. For dockers pass to it something like `docker run --rm -i -v $(pwd):$(pwd) -v /tmp/tmp -w $(pwd) rnix/openssl-gost openssl'`. `/tmp ` volume is important there!
+* Для подписей GOST3410_2012_256, а они только одни и остались, используйте `OpenSslCliJwtSigner`, передавая ей путь к `openssl`. Для докера используйте `docker run --rm -i -v $(pwd):$(pwd) -v /tmp/tmp -w $(pwd) rnix/openssl-gost openssl'`. `/tmp ` volume важен!
+* Аналогично, если у вас есть свои утилиты, то можете сделать аналог `OpenSslCliJwtSigner` со своими деталями имплементации.
 
-### Auth flow
+### Схема аутентификации
 
-Auth flow is standard.
+Стандартна.
 
 ```php
 // https://your-system.domain/auth/start/
@@ -82,28 +78,9 @@ $esiaPersonData = $provider->getResourceOwner($accessToken);
 var_export($esiaPersonData->toArray());
 ```
 
-### Simplified facade
 
-If you don't like classes with about 20 public methods, there is simplified facade-class.
-
-```php
-use Ekapusta\OAuth2Esia\EsiaService;
-
-$service = new EsiaService($provider);
-
-// https://your-system.domain/auth/start/
-$_SESSION['oauth2.esia.state'] = $service->generateState();
-$authUrl = $service->getAuthorizationUrl($_SESSION['oauth2.esia.state']);
-header('Location: '.$authUrl);
-exit;
-
-// https://your-system.domain/auth/finish/?state=...&code=...
-$esiaPersonData = $service->getResourceOwner($_SESSION['oauth2.esia.state'], $_GET['state'], $_GET['code'])
-var_export($esiaPersonData->toArray());
-```
-
-Example $esiaPersonData
------------------------
+Пример $esiaPersonData
+----------------------
 
 ```json
 {
@@ -277,80 +254,17 @@ Example $esiaPersonData
 ```
 
 
-Testing
--------
+Тестирование
+------------
 
-Node is used for interactive headless chrome auth bot.
+Node используется для интерактивного логина на тестовый стенд (бот на базе chromium -- puppeteer)
 
 ```bash
-vendor/bin/phpunit --debug
+vendor/bin/simple-phpunit --debug
 ```
 
-
-About ESIA
-----------
-
-There are three ESIA user identification levels:
-
- * simple
- * standard
- * confrimed
-
-Information system can ask info about user from individuals register.
-
-
-ESIA user could be:
-
- * individual
- * individual entrepreneur (individual + flag "is entrepreneur")
- * individual connected to legal entities accounts
- * individual connected to public authorities accounts
-
-
-Users after individual can be only of confirmed identification level.
-
-
-User info
----------
-
-After user's permission his/her info can be read through REST.
-
-Scopes
+Ссылки
 ------
 
-To get some info about user system should ask it through "scope" param.
-Same param entered in paper-written application for connection to ESIA.
-
-Scope is analog of permissions in mobile apps, but for user's data.
-
-Here are list of possible scopes: fullname, birthdate, gender, snils, inn, id\_doc,
-birthplace, medical\_doc, military\_doc, foreign\_passport\_doc, drivers\_licence\_doc,
-vehicles, email, mobile, contacts, kid\_fullname.
-
-
-Security algos
---------------
-
-ESIA REST supports both RSA2048+SHA256 and GOST3410-2001+GOST341194 algos.
-
-
-Authentication methods
-----------------------
-
-There are two ways to authenticate user: SAML 2.0 and OpenID Connect 1.0 (OAuth 2.0 extension).
-SAML 2.0 is only for public authorities.
-
-For legal entities OpenID Connect is used.
-
-
-Terms
------
-
-ESIA from Russian "ЕСИА", which is "Единая система идентификации и аутентификации".
-Translated as "Unified identification and authentication system".
-
-Links
------
-
  1. [Единая система идентификации и аутентификации](https://ru.wikipedia.org/wiki/%D0%95%D0%B4%D0%B8%D0%BD%D0%B0%D1%8F_%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B0_%D0%B8%D0%B4%D0%B5%D0%BD%D1%82%D0%B8%D1%84%D0%B8%D0%BA%D0%B0%D1%86%D0%B8%D0%B8_%D0%B8_%D0%B0%D1%83%D1%82%D0%B5%D0%BD%D1%82%D0%B8%D1%84%D0%B8%D0%BA%D0%B0%D1%86%D0%B8%D0%B8)
-2. [Methodical recommendations](http://minsvyaz.ru/ru/documents/?type=50&directions=13)
+2. [Methodical recommendations](https://digital.gov.ru/documents/metodicheskie-rekomendaczii-po-ispolzovaniyu-esia)
