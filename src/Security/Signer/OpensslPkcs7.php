@@ -22,7 +22,7 @@ class OpensslPkcs7 extends Signer
         }
 
         $privateKey = openssl_pkey_get_private($keyContent, $this->privateKeyPassword);
-        if (!is_resource($privateKey)) {
+        if (false === $privateKey) {
             throw SignException::canNotReadPrivateKey($this->privateKeyPath);
         }
 
