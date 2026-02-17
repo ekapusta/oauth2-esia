@@ -1,10 +1,10 @@
 <?php
-return PhpCsFixer\Config::create()
+return (new PhpCsFixer\Config())
     ->setCacheFile(__DIR__.'/.php_cs.cache')
     ->setRules([
         '@Symfony' => true,
         '@Symfony:risky' => true,
-        'general_phpdoc_annotation_remove' => ['@author'],
+        'general_phpdoc_annotation_remove' => ['annotations' => ['author']],
         'array_syntax' => ['syntax' => 'short'],
         'native_constant_invocation' => ['fix_built_in' => false],
         'native_function_invocation' => ['include' => []],
