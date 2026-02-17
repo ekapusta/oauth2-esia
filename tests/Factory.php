@@ -7,10 +7,12 @@ use Bramus\Monolog\Formatter\ColorSchemes\TrafficLight;
 use Ekapusta\OAuth2Esia\Provider\EsiaProvider;
 use Ekapusta\OAuth2Esia\Security\JWTSigner\OpenSslCliJwtSigner;
 use Ekapusta\OAuth2Esia\Token\EsiaAccessToken;
-use Lcobucci\JWT\Builder;
+use Lcobucci\JWT\Encoding\ChainedFormatter;
+use Lcobucci\JWT\Encoding\JoseEncoder;
 use Lcobucci\JWT\Signer;
-use Lcobucci\JWT\Signer\Key;
+use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Signer\Rsa\Sha256;
+use Lcobucci\JWT\Token\Builder;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -18,7 +20,7 @@ use Psr\Log\LoggerInterface;
 
 class Factory
 {
-    const KEYS = EsiaProvider::RESOURCES;
+    public const KEYS = EsiaProvider::RESOURCES;
 
     /**
      * @return LoggerInterface
@@ -62,9 +64,12 @@ class Factory
      */
     public static function createAccessToken($privateKeyPath, $publicKeyPath, Signer $signer)
     {
-        $builder = new Builder();
+        $builder = new Builder(
+            new JoseEncoder(),
+            ChainedFormatter::default()
+        );
         $isFresh = method_exists($builder, 'issuedAt');
-        $key = new Key(file_get_contents($privateKeyPath));
+        $key = InMemory::file($privateKeyPath);
 
         if ($isFresh) {
             $now = new \DateTimeImmutable();
@@ -87,7 +92,7 @@ class Factory
 
         $accessToken = $builder->getToken($signer, $key);
 
-        return new EsiaAccessToken(['access_token' => (string) $accessToken], $publicKeyPath, $signer);
+        return new EsiaAccessToken(['access_token' => $accessToken->toString()], $publicKeyPath, $signer);
     }
 
     /**

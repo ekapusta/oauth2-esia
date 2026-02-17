@@ -22,11 +22,11 @@ class OpensslPkcs7Test extends SignerTest
 
     protected function pathToCertificate()
     {
-        return  Factory::KEYS.'ekapusta.rsa.test.cer';
+        return Factory::KEYS.'ekapusta.rsa.test.cer';
     }
 
     protected function pathToAnotherCertificate()
     {
-        return  Factory::KEYS.'another.rsa.test.cer';
+        return Factory::KEYS.'another.rsa.test.cer';
     }
 }

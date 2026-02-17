@@ -16,8 +16,8 @@
     }
   ],
   "require": {
-    "php": "^5.6 || ^7.0 || ^8.0",
-    "lcobucci/jwt": "^3.2.2",
+    "php": "^7.4 || ^8.0",
+    "lcobucci/jwt": "^4.0",
     "league/oauth2-client": "^2.7.0",
     "psr/log": "^1.0",
     "ramsey/uuid": "^3.0 || ^4.0"
@@ -44,8 +44,8 @@
   "scripts": {
     "f": "@fix",
     "fix": "php-cs-fixer fix --ansi",
-    "test": "phpunit --columns max --color=always",
-    "debug": "phpunit --columns max --color=always --debug",
-    "cover": "phpdbg -qrr vendor/bin/phpunit --columns max --color=always --coverage-html ./.coverage --coverage-text"
+    "test": "simple-phpunit --columns max --color=always",
+    "debug": "simple-phpunit --columns max --color=always --debug",
+    "cover": "XDEBUG_MODE=coverage simple-phpunit --columns max --color=always --coverage-html ./.coverage --coverage-text"
   }
 }

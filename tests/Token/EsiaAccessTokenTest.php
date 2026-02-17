@@ -69,7 +69,7 @@ class EsiaAccessTokenTest extends TestCase
 
         Factory::createGostAccessToken(
             Factory::KEYS.'another.gost.test.key',
-            '/dev/null'
+            __FILE__
         );
     }
 
