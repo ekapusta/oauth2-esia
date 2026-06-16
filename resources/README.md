@@ -26,13 +26,19 @@ Update ESIA`a public keys
 -------------------------
 
 ```
+# If wget will fail -- open in browser as it can be bot-protected
 wget --no-check-certificate https://esia.gosuslugi.ru/public/esia.zip
 unzip esia.zip
 rm -rf esia.zip esia RSA_PROD_2025_JWK.jwk
-mv RSA_PROD_2025.cer esia.prod.cer
-openssl x509 -inform der -in "ГОСТ_PROD_25_26.cer" -out esia.gost.prod.cer
+mv RSA_PROD_2026_NEW.cer esia.prod.cer
+openssl x509 -inform der -in "ГОСТ_PROD_26_27.cer" -out esia.gost.prod.cer
 docker run --rm -i -v $(pwd):$(pwd) -v /tmp/tmp -w $(pwd) rnix/openssl-gost openssl x509 -engine gost -noout -pubkey -in esia.gost.prod.cer -out esia.gost.prod.public.key
-rm ГОСТ_PROD_25_26.cer
+rm ГОСТ*.cer
+mv RSA_TESIA_ACTUAL.cer esia.test.cer
+openssl x509 -noout -pubkey -in esia.test.cer -out esia.test.public.key
+openssl x509 -inform der -in "TESIA GOST 2026-2027 new.cer" -out esia.gost.test.cer
+docker run --rm -i -v $(pwd):$(pwd) -v /tmp/tmp -w $(pwd) rnix/openssl-gost openssl x509 -engine gost -noout -pubkey -in esia.gost.test.cer -out esia.gost.test.public.key
+rm TESIA*.cer
 ```
 
 https://digital.gov.ru/documents/metodicheskie-rekomendaczii-po-ispolzovaniyu-esia
